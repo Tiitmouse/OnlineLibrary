@@ -13,7 +13,7 @@ public partial class Book
 
     public int? PublicationYear { get; set; }
 
-    public string? Isbn { get; set; }
+    public string? Isbn { get; set; } //TODO not null 
 
     public int? AuthorId { get; set; }
 
