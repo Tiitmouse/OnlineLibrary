@@ -8,16 +8,16 @@ public interface IBookService
 {
     public Task<Book> Get(int id);
     public Task Delete(int id);
-    public void Update(int id, Book book);
-    public void Create(Book newBook);
+    public Task Update(int id, Book book);
+    public Task Create(Book newBook);
     public Task<List<Book>> GetAll();
 }
 
 public class BookServices : IBookService
 {
-    private readonly OnlineLibraryContext _context;
+    private readonly RwaContext _context;
 
-    public BookServices(OnlineLibraryContext context)
+    public BookServices(RwaContext context)
     {
         _context = context;
     }
@@ -26,9 +26,6 @@ public class BookServices : IBookService
     {
         Book book = await _context.Books
             .AsNoTracking()
-            .Include(b => b.Genres)
-            .Include(b => b.Author)
-            .Include(b => b.Locations)
             .FirstOrDefaultAsync(b => b.IdBook == id);
         if (book == null)
         {
@@ -45,7 +42,7 @@ public class BookServices : IBookService
         await _context.SaveChangesAsync();
     }
 
-    public async void Update(int id, Book book)
+    public async Task Update(int id, Book book)
     {
         Book original = await _context.Books.FirstOrDefaultAsync(b => b.IdBook == id);
         if (original == null)
@@ -62,9 +59,9 @@ public class BookServices : IBookService
         await _context.SaveChangesAsync();
     }
 
-    public async void Create(Book newBook)
+    public async Task Create(Book newBook)
     {
-        Book? book = _context.Books.FirstOrDefault(b => b.Isbn == newBook.Isbn);
+        Book? book = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == newBook.Isbn);
         if (book != null)
         {
             throw new AlreadyExistsException($"Book with {newBook.Isbn} already exists");
@@ -79,7 +76,6 @@ public class BookServices : IBookService
     {
         return await _context.Books
             .AsNoTracking()
-            .Include(b => b.Genres)
             .ToListAsync();
     }
 }

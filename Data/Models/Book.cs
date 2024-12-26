@@ -13,15 +13,17 @@ public partial class Book
 
     public int? PublicationYear { get; set; }
 
-    public string? Isbn { get; set; } //TODO not null 
+    public string Isbn { get; set; } = null!;
 
     public int? AuthorId { get; set; }
 
+    public int? GenreId { get; set; }
+
     public virtual Author? Author { get; set; }
 
+    public virtual ICollection<BookLocation> BookLocations { get; set; } = new List<BookLocation>();
+
+    public virtual Genre? Genre { get; set; }
+
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
-
-    public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
-
-    public virtual ICollection<Location> Locations { get; set; } = new List<Location>();
 }

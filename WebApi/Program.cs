@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("Default");
-builder.Services.AddDbContext<OnlineLibraryContext>(options =>
+builder.Services.AddDbContext<RwaContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IBookService, BookServices>();

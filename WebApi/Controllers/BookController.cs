@@ -27,22 +27,22 @@ public class BookController : ControllerBase
         return Ok(book);
     }
     [HttpDelete("([action]/{id}")]
-    public IActionResult DeleteBook(int id)
+    public async Task<IActionResult> DeleteBook(int id)
     {
-        _bookService.Delete(id);
+        await _bookService.Delete(id);
         return NoContent();
     } 
     [HttpPost("[action]")]
-    public IActionResult CreateBook(NewBookDto bookDto)
+    public async Task<IActionResult> CreateBook(NewBookDto bookDto)
     {
         Book newBook = _mapper.Map<Book>(bookDto);
-        _bookService.Create(newBook);
+        await _bookService.Create(newBook);
         return Ok($"book with {newBook.Isbn} isbn has been added");
     } 
     [HttpPut("[action]")]
-    public IActionResult EditBook(int id, Book book)
+    public async Task<IActionResult> EditBook(int id, Book book)
     {
-        _bookService.Update(id, book);
+        await _bookService.Update(id, book);
         return Ok($"book {id} edited");
     } 
     [HttpGet("[action]")]
