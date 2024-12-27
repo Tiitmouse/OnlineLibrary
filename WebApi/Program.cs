@@ -18,6 +18,7 @@ builder.Services.AddDbContext<RwaContext>(options =>
 builder.Services.AddScoped<IBookService, BookServices>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IAuthorService, AuthorServices>();
+builder.Services.AddScoped<ILocationService, LocationServices>();
 
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 

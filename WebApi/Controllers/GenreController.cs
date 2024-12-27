@@ -9,9 +9,11 @@ namespace WebApi.Controllers;
 public class GenreController : ControllerBase
 {
     private readonly IGenreService _genreService;
-    public GenreController(IGenreService genreService)
+    private readonly IMapper _mapper;
+    public GenreController(IGenreService genreService, IMapper mapper)
     {
         _genreService = genreService;
+        _mapper = mapper;
     }
     
     [HttpGet("[action]/{id}")]
@@ -29,8 +31,9 @@ public class GenreController : ControllerBase
     }
     
     [HttpPost("[action]")]
-    public async Task<IActionResult> CreateGenre(Genre genre)
+    public async Task<IActionResult> CreateGenre(GenreDto dto)
     {
+        var genre = _mapper.Map<Genre>(dto);
         await _genreService.Create(genre);
         return Ok($"Genre {genre.GenreName} has been added");
     }

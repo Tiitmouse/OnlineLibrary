@@ -33,8 +33,9 @@ public class AuthorController : ControllerBase
     }
     
     [HttpPost("[action]")]
-    public async Task<IActionResult> CreateAuthor(Author author)
+    public async Task<IActionResult> CreateAuthor(AuthorDto dto)
     {
+        var author = _mapper.Map<Author>(dto);
         await _authorService.Create(author);
         return Ok($"author {author.AuthorName} has been added");
     }
