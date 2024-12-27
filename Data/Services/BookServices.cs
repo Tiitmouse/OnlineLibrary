@@ -26,6 +26,9 @@ public class BookServices : IBookService
     {
         Book book = await _context.Books
             .AsNoTracking()
+            .Include(b => b.Genre)
+            .Include(b => b.BookLocations)
+            .Include(b => b.Author)
             .FirstOrDefaultAsync(b => b.IdBook == id);
         if (book == null)
         {
@@ -75,6 +78,9 @@ public class BookServices : IBookService
     {
         return await _context.Books
             .AsNoTracking()
+            .Include(b => b.Genre)
+            .Include(b => b.BookLocations)
+            .Include(b => b.Author)
             .ToListAsync();
     }
 }
