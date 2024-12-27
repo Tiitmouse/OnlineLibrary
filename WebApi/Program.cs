@@ -16,6 +16,7 @@ builder.Services.AddDbContext<RwaContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IBookService, BookServices>();
+builder.Services.AddScoped<IGenreService, GenreService>();
 
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
