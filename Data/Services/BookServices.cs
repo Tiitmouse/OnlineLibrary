@@ -31,7 +31,6 @@ public class BookServices : IBookService
         {
             throw new NotFoundException($"Book with id {id} not found");
         }
-
         return book;
     }
 
