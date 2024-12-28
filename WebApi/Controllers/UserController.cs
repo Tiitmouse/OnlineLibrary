@@ -1,96 +1,62 @@
+using System.Security.Claims;
+using AutoMapper;
 using Data.Dto;
 using Data.Models;
 using Data.Security;
+using Data.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
 public class UserController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
-    private readonly RwaContext _context;
+    private readonly IUserServices _userServices;
+    private readonly IMapper _mapper;
 
-    public UserController(IConfiguration configuration, RwaContext context)
+    public UserController(IUserServices userServices, IMapper mapper)
     {
-        _configuration = configuration;
-        _context = context;
+        _userServices = userServices;
+        _mapper = mapper;
+    }
+    
+    [HttpPost("[action]")]
+    public async Task<ActionResult<UserDto>> Register(UserDto userDto)
+    {
+        var user = _mapper.Map<User>(userDto);
+        await _userServices.Register(user, userDto.Password);
+        return Ok();
+    }
+    
+    [HttpPost("[action]")]
+    public async Task<ActionResult> Login(UserLoginDto userDto)
+    {
+        var token = await _userServices.Login(userDto.Username, userDto.Password);
+        return Ok(token); 
     }
     
     [HttpGet("[action]")]
-    public ActionResult GetToken()
+    public async Task<ActionResult<UserDto>> GetUser(string username)
     {
-        try
-        {
-            var secureKey = _configuration["JWT:SecureKey"];
-            var serializedToken = JwtTokenProvider.CreateToken(secureKey, 10);
-
-            return Ok(serializedToken);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        var user = _mapper.Map<UserDto>(_userServices.GetUser(username));
+        await _userServices.GetUser(username);
+        return Ok(user);
+    }
+    [Authorize]
+    [HttpPut("[action]")]
+    public async Task<ActionResult<UserDto>> UpdateUser(UserDto userDto)
+    {
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var username = identity.FindFirst(ClaimTypes.Name).Value;
+        
+        var user = await _userServices.UpdateUser(userDto, username);
+        return Ok(user);
     }
     
-    [HttpPost("[action]")]
-    public ActionResult<UserDto> Register(UserDto userDto)
+    [HttpDelete("[action]")]
+    public ActionResult DeleteUser(int id)
     {
-        try
-        {
-            var trimmedUsername = userDto.Username.Trim();
-            if (_context.Users.Any(x => x.Username.Equals(trimmedUsername)))
-                return BadRequest($"Username {trimmedUsername} already exists");
-
-            var b64hash = PasswordHashProvider.GetHash(userDto.Password);
-
-            var user = new User
-            {
-                Username = userDto.Username,
-                FullName = userDto.FullName,
-                PasswordHash = b64hash,
-            };
-
-            _context.Users.Add(user);
-            _context.SaveChanges();
-
-            return Ok(userDto);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
-    }
-    
-    [HttpPost("[action]")]
-    public ActionResult Login(UserLoginDto userDto)
-    {
-        try
-        {
-            var genericLoginFail = "Incorrect username or password";
-
-            // Try to get a user from database
-            var existingUser = _context.Users.FirstOrDefault(x => x.Username == userDto.Username);
-            if (existingUser == null)
-                return BadRequest(genericLoginFail);
-
-            // Check is password hash matches
-            var b64hash = PasswordHashProvider.GetHash(userDto.Password);
-            if (b64hash != existingUser.PasswordHash)
-                return BadRequest(genericLoginFail);
-
-            // Create and return JWT token
-            var secureKey = _configuration["JWT:SecureKey"];
-            var serializedToken = 
-                JwtTokenProvider.CreateToken(
-                    secureKey, 
-                    120, 
-                    userDto.Username); // Hardcoded example!
-
-            return Ok(serializedToken);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        _userServices.DeleteUser(id);
+        return Ok();
     }
 }
