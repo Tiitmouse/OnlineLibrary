@@ -29,6 +29,11 @@ public class MapperProfile : Profile
         CreateMap<Author, AuthorDto>();
         CreateMap<AuthorDto, Author>()
             .ForMember(dest => dest.IdAuthor, opt => opt.Ignore());
+        
+        CreateMap<User, UserDto>();
+        CreateMap<UserDto, User>()
+            .ForMember(dest => dest.IdUser, opt => opt.Ignore());
+        
     }
     
 }
