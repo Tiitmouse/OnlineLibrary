@@ -38,8 +38,7 @@ public class UserController : ControllerBase
     [HttpGet("[action]")]
     public async Task<ActionResult<UserDto>> GetUser(string username)
     {
-        var user = _mapper.Map<UserDto>(_userServices.GetUser(username));
-        await _userServices.GetUser(username);
+        var user = await _userServices.GetUser(username);
         return Ok(user);
     }
     [Authorize]
