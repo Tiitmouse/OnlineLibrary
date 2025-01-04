@@ -1,12 +1,13 @@
 using AutoMapper;
 using Data.Dto;
-using Data.Models;
+using Data.Eunumerators;
 using Data.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
+[Authorize]
 public class LogController  : ControllerBase
 {
     private readonly ILogService _logService;
@@ -16,13 +17,6 @@ public class LogController  : ControllerBase
     {
         _logService = logService;
         _mapper = mapper;
-    }
-
-    [HttpPost("[action]")]
-    public async Task<IActionResult> CreateLog(LogDto dto)
-    {
-        await _logService.Create(dto.Message, dto.Importance);
-        return Ok("Log created");
     }
     
     [HttpGet("[action]")]

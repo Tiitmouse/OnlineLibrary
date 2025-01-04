@@ -35,7 +35,7 @@ public class LogService : ILogService
     {
         return await _context.Logs
             .OrderBy(log => log.Date)
-            .Skip(n * page-1)
+            .Skip(n * (page-1))
             .Take(n)
             .ToListAsync();
     }

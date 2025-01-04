@@ -1,4 +1,5 @@
 using Data.Dto;
+using Data.Eunumerators;
 using Data.Exceptions;
 using Data.Models;
 using Data.Security;
@@ -20,25 +21,30 @@ public class UserServices : IUserServices
 {
     private readonly IConfiguration _configuration;
     private readonly RwaContext _context;
+    private readonly ILogService _logService;
 
-    public UserServices(IConfiguration configuration, RwaContext context)
+    public UserServices(IConfiguration configuration, RwaContext context, ILogService logService)
     {
         _configuration = configuration;
         _context = context;
+        _logService = logService;
     }
 
     public async Task<User> Register(User user, string password)
     {
         var trimmedUsername = user.Username.Trim();
         if (await _context.Users.AnyAsync(x => x.Username.Equals(trimmedUsername)))
+        { 
+            _logService.Create("User failed to register", Importance.Low);
             throw new Exception($"Username {trimmedUsername} already exists");
-
+        }
+        
         var b64hash = PasswordHashProvider.GetHash(password);
         user.PasswordHash = b64hash;
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
-
+        _logService.Create("User successfully registered", Importance.Low);
         return user;
     }
 
@@ -48,13 +54,21 @@ public class UserServices : IUserServices
 
         var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
         if (existingUser == null)
+        { 
+            _logService.Create("User failed to log in", Importance.Medium);
             throw new Exception(genericLoginFail);
+        }
 
         var b64hash = PasswordHashProvider.GetHash(password);
         if (b64hash != existingUser.PasswordHash)
+        { 
+            _logService.Create("User failed to log in", Importance.Medium);
             throw new Exception(genericLoginFail);
+        }
+
 
         var secureKey = _configuration["JWT:SecureKey"];
+        _logService.Create("User successfully logged in", Importance.Low);
         return JwtTokenProvider.CreateToken(secureKey, 120, username);
     }
 
