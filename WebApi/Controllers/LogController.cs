@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Authorize]
+[Route("api/[controller]")]
 public class LogController  : ControllerBase
 {
     private readonly ILogService _logService;
@@ -20,7 +21,7 @@ public class LogController  : ControllerBase
     }
     
     [HttpGet("[action]")]
-    public async Task<IActionResult> FetchLogs(int n, int page)
+    public async Task<IActionResult> FetchLogs([FromQuery] int n, int page)
     {
         var logs = await _logService.GetPaginated(n, page);
         var logDtos = _mapper.Map<List<LogDto>>(logs);

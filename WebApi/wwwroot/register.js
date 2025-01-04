@@ -19,7 +19,7 @@ $(document).ready(function() {
             data: JSON.stringify(user),
             success: function(response) {
                 alert('Registration successful!');
-                window.location.href = 'logs.html';
+                window.location.href = 'login.html';
             },
             error: function(xhr, status, error) {
                 $('#errorMessage').text('Registration failed: ' + xhr.responseText).show();

@@ -11,8 +11,8 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify({ Username: username, Password: password }),
             success: function(response) {
+                localStorage.setItem('jwtToken', response);
                 window.location.href = 'logs.html';
-                console.log(response);
             },
             error: function() {
                 $('#errorMessage').show();

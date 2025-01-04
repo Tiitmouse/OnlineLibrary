@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="logs.css">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h2>Logs</h2>
+        </div>
+        <div class="col-md-6 text-right">
+            <select id="logsPerPage" class="form-control d-inline-block" style="width: 80px; margin-right: 10px;">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+            <button id="refreshLogs" class="btn" style="background: #B6D7F0">Refresh Logs</button>
+            <button id="logout" class="btn" style="background: #F29696">Logout</button>
+        </div>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Message</th>
+        </tr>
+        </thead>
+        <tbody id="logsTableBody">
+        <!-- Logs will be inserted here -->
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination justify-content-center" id="pagination">
+            <!-- Pagination will be inserted here -->
+        </ul>
+    </nav>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="logs.js"></script>
+</body>
+</html>

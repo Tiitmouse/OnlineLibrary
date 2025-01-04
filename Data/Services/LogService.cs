@@ -34,7 +34,7 @@ public class LogService : ILogService
     public async Task<List<Log>> GetPaginated(int n, int page)
     {
         return await _context.Logs
-            .OrderBy(log => log.Date)
+            .OrderByDescending(log => log.Date)
             .Skip(n * (page-1))
             .Take(n)
             .ToListAsync();
