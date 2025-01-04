@@ -76,8 +76,12 @@ public class UserServices : IUserServices
     {
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
         if (user == null)
+        {
+            _logService.Create("Failed to fetch user", Importance.Low);
             throw new NotFoundException("User not found");
+        }
 
+        _logService.Create("User fetched successfully", Importance.Low);
         return user;
     }
 
@@ -85,13 +89,16 @@ public class UserServices : IUserServices
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         if (user == null)
+        {
+            _logService.Create("Failed to fetch user", Importance.Low);
             throw new NotFoundException("User not found");
+        }
 
         user.FullName = userDto.FullName;
         user.PasswordHash = PasswordHashProvider.GetHash(userDto.Password);
 
         await _context.SaveChangesAsync();
-
+        _logService.Create("User successfully updated", Importance.Medium);
         return user;
     }
 
@@ -99,8 +106,11 @@ public class UserServices : IUserServices
     {
         var user = await _context.Users.FindAsync(id);
         if (user == null)
+        {
+            _logService.Create("Failed to fetch user", Importance.Low);
             throw new Exception("User not found");
-
+        }
+        _logService.Create("User successfully deleted", Importance.High);
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
     }
