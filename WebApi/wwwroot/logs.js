@@ -39,7 +39,10 @@ $(document).ready(function() {
     }
 
     function updatePagination(page, perPage) {
-        // Implement pagination logic here
+        $('#pageInfo').text(`Page ${page}`);
+        $('#prevPage').prop('disabled', page === 1);
+        // Assuming you have a way to determine if there are more logs
+        $('#nextPage').prop('disabled', logs.length < perPage);
     }
 
     $('#logsPerPage').change(function() {
@@ -53,7 +56,19 @@ $(document).ready(function() {
 
     $('#logout').click(function() {
         localStorage.removeItem('jwtToken');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
+    });
+
+    $('#prevPage').click(function() {
+        if (currentPage > 1) {
+            currentPage--;
+            fetchLogs(currentPage, logsPerPage);
+        }
+    });
+
+    $('#nextPage').click(function() {
+        currentPage++;
+        fetchLogs(currentPage, logsPerPage);
     });
 
     fetchLogs(currentPage, logsPerPage);
