@@ -34,6 +34,9 @@ public class MapperProfile : Profile
         CreateMap<UserDto, User>()
             .ForMember(dest => dest.IdUser, opt => opt.Ignore());
         
+        CreateMap<Log, LogDto>();
+        CreateMap<LogDto, Log>()
+            .ForMember(dest => dest.IdLog, opt => opt.Ignore());
     }
     
 }

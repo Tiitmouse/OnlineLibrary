@@ -25,6 +25,8 @@ public partial class RwaContext : DbContext
 
     public virtual DbSet<Location> Locations { get; set; }
 
+    public virtual DbSet<Log> Logs { get; set; }
+
     public virtual DbSet<Reservation> Reservations { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -124,6 +126,21 @@ public partial class RwaContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("location_name");
+        });
+
+        modelBuilder.Entity<Log>(entity =>
+        {
+            entity.HasKey(e => e.IdLog).HasName("PK__Logs__6CC851FEA7A5C594");
+
+            entity.Property(e => e.IdLog).HasColumnName("id_log");
+            entity.Property(e => e.Date)
+                .HasColumnType("datetime")
+                .HasColumnName("date");
+            entity.Property(e => e.Importance).HasColumnName("importance");
+            entity.Property(e => e.Message)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("message");
         });
 
         modelBuilder.Entity<Reservation>(entity =>
