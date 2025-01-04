@@ -1,3 +1,4 @@
+using Data.Eunumerators;
 using Data.Exceptions;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +17,12 @@ public interface IBookService
 public class BookServices : IBookService
 {
     private readonly RwaContext _context;
+    private readonly ILogService _logService;
 
-    public BookServices(RwaContext context)
+    public BookServices(RwaContext context, ILogService logService)
     {
         _context = context;
+        _logService = logService;
     }
 
     public async Task<Book> Get(int id)
@@ -32,15 +35,23 @@ public class BookServices : IBookService
             .FirstOrDefaultAsync(b => b.IdBook == id);
         if (book == null)
         {
+            _logService.Create("Failed to fetch book with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Book with id {id} not found");
         }
+        _logService.Create("Book with ID {id} fetched successdully", Importance.Low);
         return book;
     }
 
     public async Task Delete(int id)
     {
         Book book = await _context.Books.FirstOrDefaultAsync(b => b.IdBook == id);
+        if (book == null)
+        {
+            _logService.Create("Cannot delete book with ID {id}, because there is none with the same ID", Importance.Low);
+            throw new NotFoundException($"Book with id {id} not found");
+        }
         _context.Books.Remove(book);
+        _logService.Create("Book with ID {id} successfully deleted", Importance.High);
         await _context.SaveChangesAsync();
     }
 
@@ -49,6 +60,7 @@ public class BookServices : IBookService
         Book original = await _context.Books.FirstOrDefaultAsync(b => b.IdBook == id);
         if (original == null)
         {
+            _logService.Create("Cannot update book with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Book with id {id} not found");
         }
 
@@ -58,6 +70,7 @@ public class BookServices : IBookService
         original.Isbn = book.Isbn;
 
         _context.Books.Update(original);
+        _logService.Create("Book with ID {id} successfully updated", Importance.High);
         await _context.SaveChangesAsync();
     }
 
@@ -66,10 +79,12 @@ public class BookServices : IBookService
         Book? book = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == newBook.Isbn);
         if (book != null)
         {
+            _logService.Create("Cannot create book with ISBN {newBook.Isbn}, because there is already a book with the same ISBN", Importance.Low);
             throw new AlreadyExistsException($"Book with {newBook.Isbn} already exists");
         }
 
         await _context.Books.AddAsync(newBook);
+        _logService.Create("Book with ISBN {newBook.Isbn} successfully added", Importance.High);
         await _context.SaveChangesAsync();
 
     }
