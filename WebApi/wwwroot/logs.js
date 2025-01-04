@@ -47,6 +47,7 @@ $(document).ready(function() {
 
     $('#logsPerPage').change(function() {
         logsPerPage = $(this).val();
+        currentPage = 1;
         fetchLogs(currentPage, logsPerPage);
     });
 
