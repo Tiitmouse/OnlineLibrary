@@ -80,7 +80,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
+app.UseDefaultFiles("/index.html");
 // Use authentication / authorization middleware
 app.UseAuthentication();
 app.UseAuthorization(); // -> this should already be present

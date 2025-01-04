@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
+[Route("api/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly IUserServices _userServices;
@@ -29,12 +30,13 @@ public class UserController : ControllerBase
     }
     
     [HttpPost("[action]")]
-    public async Task<ActionResult> Login(UserLoginDto userDto)
+    public async Task<ActionResult> Login([FromBody]UserLoginDto userDto)
     {
         var token = await _userServices.Login(userDto.Username, userDto.Password);
         return Ok(token); 
     }
     
+    [Authorize]
     [HttpGet("[action]")]
     public async Task<ActionResult<UserDto>> GetUser(string username)
     {
@@ -51,7 +53,7 @@ public class UserController : ControllerBase
         var user = await _userServices.UpdateUser(userDto, username);
         return Ok(user);
     }
-    
+    [Authorize]
     [HttpDelete("[action]")]
     public ActionResult DeleteUser(int id)
     {
