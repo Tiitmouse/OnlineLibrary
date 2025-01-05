@@ -1,4 +1,5 @@
 using Data.Models;
+using Data.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,13 @@ builder.Services.AddDbContext<RwaContext>(options => {
 });
 
 builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddScoped<IBookService, BookServices>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<IAuthorService, AuthorServices>();
+builder.Services.AddScoped<ILocationService, LocationServices>();
+builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<ILogService, LogService>();
 
 builder.Services.AddSession(options =>
 {

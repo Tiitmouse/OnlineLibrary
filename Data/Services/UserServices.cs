@@ -1,8 +1,12 @@
+using System.Security.Claims;
 using Data.Dto;
 using Data.Eunumerators;
 using Data.Exceptions;
 using Data.Models;
 using Data.Security;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -14,6 +18,7 @@ public interface IUserServices
     Task<string> Login(string username, string password);
     Task<User> GetUser(string username);
     Task<User> UpdateUser(UserDto userDto, string username);
+    Task<ClaimsIdentity> LoginCookie(string username, string password);
     Task DeleteUser(int id);
 }
 
@@ -70,6 +75,38 @@ public class UserServices : IUserServices
         var secureKey = _configuration["JWT:SecureKey"];
         _logService.Create($"User {username} successfully logged in", Importance.Low);
         return JwtTokenProvider.CreateToken(secureKey, 120, username);
+    }
+    
+    public async Task<ClaimsIdentity> LoginCookie(string username, string password)
+    {
+        var genericLoginFail = "Incorrect username or password";
+
+        var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+        if (existingUser == null)
+        { 
+            _logService.Create("User failed to log in", Importance.Medium);
+            throw new Exception(genericLoginFail);
+        }
+
+        var b64hash = PasswordHashProvider.GetHash(password);
+        if (b64hash != existingUser.PasswordHash)
+        { 
+            _logService.Create("User failed to log in", Importance.Medium);
+            throw new Exception(genericLoginFail);
+        }
+
+        var claims = new List<Claim>() {
+            new Claim(ClaimTypes.Name, username),
+            new Claim("admin", existingUser.IsAdmin.ToString())
+        };
+
+        var claimsIdentity = new ClaimsIdentity(
+            claims,
+            CookieAuthenticationDefaults.AuthenticationScheme);
+
+        var authProperties = new AuthenticationProperties();
+        _logService.Create($"User {username} successfully logged in", Importance.Low);
+        return claimsIdentity;
     }
 
     public async Task<User> GetUser(string username)
