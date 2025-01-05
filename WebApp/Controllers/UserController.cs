@@ -63,4 +63,10 @@ public class UserController : Controller
             return BadRequest(ex.Message);
         }
     }
+
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction("Index", "Home");
+    }
 }
