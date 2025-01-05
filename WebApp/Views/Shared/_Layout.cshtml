@@ -18,22 +18,58 @@
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            @{
+                bool isAdmin = User.Claims.FirstOrDefault(c => c.Type == "admin")?.Value == "True";
+            }
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item ms-auto">
-                            <span class="nav-link text-dark">@User.Identity.Name</span>
-                        </li>
-                        <li class="nav-item ">
-                            <a class="nav-link text-dark" href="@Url.ActionLink("Logout", "User")">Logout</a>
-                        </li>
+                        if (isAdmin)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <p>Books</p>
+                            </li>
+                            <li class="nav-item">
+                                <p>Authors </p>
+                            </li>
+                            <li class="nav-item">
+                                <p>Genres </p>
+                            </li>
+                            <li class="nav-item">
+                                <p>Locations </p>
+                            </li>
+                            <li class="nav-item">
+                                <p>Reservations </p>
+                            </li>
+                            <li class="nav-item ms-auto">
+                                <span class="nav-link text-dark">@User.Identity.Name</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="@Url.ActionLink("Logout", "User")">Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <p>nije admin</p>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item ms-auto">
+                                <span class="nav-link text-dark">@User.Identity.Name</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="@Url.ActionLink("Logout", "User")">Logout</a>
+                            </li>
+                        }                        
                     }
                     else
                     {
