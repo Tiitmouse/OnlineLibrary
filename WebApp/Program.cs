@@ -2,6 +2,7 @@ using Data.Models;
 using Data.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using WebApp;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,9 @@ builder.Services.AddScoped<IAuthorService, AuthorServices>();
 builder.Services.AddScoped<ILocationService, LocationServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ILogService, LogService>();
+
+
+builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 builder.Services.AddSession(options =>
 {

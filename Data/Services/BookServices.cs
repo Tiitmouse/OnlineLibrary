@@ -1,3 +1,4 @@
+using Data.Dto;
 using Data.Eunumerators;
 using Data.Exceptions;
 using Data.Models;
@@ -12,6 +13,8 @@ public interface IBookService
     public Task Update(int id, Book book);
     public Task Create(Book newBook);
     public Task<List<Book>> GetAll();
+    
+
 }
 
 public class BookServices : IBookService
@@ -47,11 +50,11 @@ public class BookServices : IBookService
         Book book = await _context.Books.FirstOrDefaultAsync(b => b.IdBook == id);
         if (book == null)
         {
-            _logService.Create("Cannot delete book with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create("Cannot delete book with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Book with id {id} not found");
         }
         _context.Books.Remove(book);
-        _logService.Create("Book with ID {id} successfully deleted", Importance.High);
+        await _logService.Create("Book with ID {id} successfully deleted", Importance.High);
         await _context.SaveChangesAsync();
     }
 
@@ -98,4 +101,5 @@ public class BookServices : IBookService
             .Include(b => b.Author)
             .ToListAsync();
     }
+    
 }

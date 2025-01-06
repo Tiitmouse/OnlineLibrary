@@ -1,0 +1,58 @@
+@model List<BookViewModel>
+
+<h1>Books</h1>
+
+<form method="get" asp-action="List">
+    <div class="input-group mb-3">
+        <input type="text" name="searchString" class="form-control" id="searchInput" placeholder="Search by title..." value="@ViewData["CurrentFilter"]" />
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</form>
+
+<form method="post" asp-action="DeleteSelectedBooks">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Select</th>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Genre</th>
+            <th scope="col">ISBN</th>
+            <th scope="col">Publication</th>
+            <th scope="col">Reservation status</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td><input type="checkbox" name="bookIds" value="@book.IdBook" /></td>
+                <td>@book.IdBook</td>
+                <td>@book.Title</td>
+                <td>@book.AuthorName</td>
+                <td>@book.GenreName</td>
+                <td>@book.Isbn</td>
+                <td>@book.PublicationYear</td>
+                <td>x</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-danger">Delete Selected Books</button>
+</form>
+
+@section Scripts {
+    <script>
+        const placeholders = ["Search by title...", "Search by author...", "Search by genre..."];
+        let index = 0;
+        const searchInput = document.getElementById("searchInput");
+
+        setInterval(() => {
+            searchInput.placeholder = placeholders[index];
+            index = (index + 1) % placeholders.length;
+        }, 2000);
+    </script>
+}
