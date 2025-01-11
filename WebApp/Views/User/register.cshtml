@@ -7,7 +7,7 @@
             </div>
             <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
                 <h1 class="fw-bolder mb-3">Register</h1>
-                <form asp-action="Register">
+                <form id="registerForm" asp-action="Register">
                     <div data-mdb-input-init class="form-outline mb-4">
                         <input type="text" name="username" class="form-control form-control-lg" placeholder="Username"/>
                     </div>
@@ -20,7 +20,7 @@
                         <input type="password" name="password" class="form-control form-control-lg" placeholder="Password"/>
                     </div>
 
-                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg btn-block">Register</button>
+                    <button id="submitBtn" type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg btn-block">Register</button>
 
                     <div class="text-center mt-4">
                         <p>Already have an account? <a asp-controller="User" asp-action="Login">Sign in</a></p>
@@ -30,3 +30,13 @@
         </div>
     </div>
 </section>
+
+<script>
+  document.getElementById("registerForm").addEventListener("submit", function(ev) {
+    document.getElementById("submitBtn").innerHTML = 
+        `    <div class="spinner-grow" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    `
+  });
+</script>

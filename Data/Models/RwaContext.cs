@@ -145,7 +145,7 @@ public partial class RwaContext : DbContext
 
         modelBuilder.Entity<Reservation>(entity =>
         {
-            entity.HasKey(e => e.IdReservation).HasName("PK__Reservat__92EE588F731B6405");
+            entity.HasKey(e => e.IdReservation).HasName("PK__Reservat__92EE588FBA5560B1");
 
             entity.Property(e => e.IdReservation).HasColumnName("id_reservation");
             entity.Property(e => e.BookLocationId).HasColumnName("bookLocation_id");
@@ -154,21 +154,19 @@ public partial class RwaContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("reservation_date");
             entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasDefaultValueSql("('Pending')")
+                .HasDefaultValueSql("((0))")
                 .HasColumnName("status");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.BookLocation).WithMany(p => p.Reservations)
                 .HasForeignKey(d => d.BookLocationId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Reservati__bookL__75A278F5");
+                .HasConstraintName("FK__Reservati__bookL__7B5B524B");
 
             entity.HasOne(d => d.User).WithMany(p => p.Reservations)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Reservati__user___74AE54BC");
+                .HasConstraintName("FK__Reservati__user___7A672E12");
         });
 
         modelBuilder.Entity<User>(entity =>

@@ -13,7 +13,7 @@ public partial class Reservation
 
     public DateTime? ReservationDate { get; set; }
 
-    public string? Status { get; set; }
+    public bool? Status { get; set; }
 
     public virtual BookLocation? BookLocation { get; set; }
 

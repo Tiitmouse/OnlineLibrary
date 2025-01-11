@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
-//TODO uncomment after implementing jwt auth
+
 [Authorize]
 [Route("api/[controller]")]
 public class BookController : ControllerBase

@@ -38,6 +38,12 @@ public class MapperProfile : Profile
             .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("yyyy-MM-dd HH:mm:ss")));
         CreateMap<LogDto, Log>()
             .ForMember(dest => dest.IdLog, opt => opt.Ignore());
+
+        CreateMap<Reservation, ReservationDto>()
+            .ForMember(src => src.BookId, opt => opt.MapFrom(src => src.BookLocation.Book.IdBook))
+            .ForMember(src => src.LocationId, opt => opt.MapFrom(src => src.BookLocation.Location.IdLocation));
+        CreateMap<ReservationDto, Reservation>()
+            .ForMember(dest => dest.BookLocation, opt => opt.Ignore());
     }
     
 }
