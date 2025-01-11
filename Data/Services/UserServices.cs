@@ -40,7 +40,7 @@ public class UserServices : IUserServices
         var trimmedUsername = user.Username.Trim();
         if (await _context.Users.AnyAsync(x => x.Username.Equals(trimmedUsername)))
         { 
-            _logService.Create("User failed to register", Importance.Low);
+            await _logService.Create("User failed to register", Importance.Low);
             throw new Exception($"Username {trimmedUsername} already exists");
         }
         
@@ -49,7 +49,7 @@ public class UserServices : IUserServices
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
-        _logService.Create($"User {user.Username} successfully registered", Importance.Low);
+        await _logService.Create($"User {user.Username} successfully registered", Importance.Low);
         return user;
     }
 
@@ -60,20 +60,20 @@ public class UserServices : IUserServices
         var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
         if (existingUser == null)
         { 
-            _logService.Create("User failed to log in", Importance.Medium);
+            await _logService.Create("User failed to log in", Importance.Medium);
             throw new Exception(genericLoginFail);
         }
 
         var b64hash = PasswordHashProvider.GetHash(password);
         if (b64hash != existingUser.PasswordHash)
         { 
-            _logService.Create("User failed to log in", Importance.Medium);
+            await _logService.Create("User failed to log in", Importance.Medium);
             throw new Exception(genericLoginFail);
         }
 
 
         var secureKey = _configuration["JWT:SecureKey"];
-        _logService.Create($"User {username} successfully logged in", Importance.Low);
+        await _logService.Create($"User {username} successfully logged in", Importance.Low);
         return JwtTokenProvider.CreateToken(secureKey, 120, username);
     }
     
@@ -84,14 +84,14 @@ public class UserServices : IUserServices
         var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
         if (existingUser == null)
         { 
-            _logService.Create("User failed to log in", Importance.Medium);
+            await _logService.Create("User failed to log in", Importance.Medium);
             throw new Exception(genericLoginFail);
         }
 
         var b64hash = PasswordHashProvider.GetHash(password);
         if (b64hash != existingUser.PasswordHash)
         { 
-            _logService.Create("User failed to log in", Importance.Medium);
+            await _logService.Create("User failed to log in", Importance.Medium);
             throw new Exception(genericLoginFail);
         }
 
@@ -105,7 +105,7 @@ public class UserServices : IUserServices
             CookieAuthenticationDefaults.AuthenticationScheme);
 
         var authProperties = new AuthenticationProperties();
-        _logService.Create($"User {username} successfully logged in", Importance.Low);
+        await _logService.Create($"User {username} successfully logged in", Importance.Low);
         return claimsIdentity;
     }
 
@@ -114,11 +114,11 @@ public class UserServices : IUserServices
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
         if (user == null)
         {
-            _logService.Create("Failed to fetch user", Importance.Low);
+            await _logService.Create("Failed to fetch user", Importance.Low);
             throw new NotFoundException("User not found");
         }
 
-        _logService.Create("User fetched successfully", Importance.Low);
+        await _logService.Create("User fetched successfully", Importance.Low);
         return user;
     }
 
@@ -127,7 +127,7 @@ public class UserServices : IUserServices
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         if (user == null)
         {
-            _logService.Create($"Failed to update user {username}, because there is none with the same username", Importance.Low);
+            await _logService.Create($"Failed to update user {username}, because there is none with the same username", Importance.Low);
             throw new NotFoundException("User not found");
         }
 
@@ -135,7 +135,7 @@ public class UserServices : IUserServices
         user.PasswordHash = PasswordHashProvider.GetHash(userDto.Password);
 
         await _context.SaveChangesAsync();
-        _logService.Create($"User {username} successfully updated", Importance.Medium);
+        await _logService.Create($"User {username} successfully updated", Importance.Medium);
         return user;
     }
 
@@ -144,10 +144,10 @@ public class UserServices : IUserServices
         var user = await _context.Users.FindAsync(id);
         if (user == null)
         {
-            _logService.Create("Failed to delete user with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create("Failed to delete user with ID {id}, because there is none with the same ID", Importance.Low);
             throw new Exception("User not found");
         }
-        _logService.Create("User with ID {id} successfully deleted", Importance.High);
+        await _logService.Create("User with ID {id} successfully deleted", Importance.High);
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
     }
