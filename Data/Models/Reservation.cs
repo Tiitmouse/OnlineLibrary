@@ -9,13 +9,13 @@ public partial class Reservation
 
     public int? UserId { get; set; }
 
-    public int? BookId { get; set; }
+    public int? BookLocationId { get; set; }
 
     public DateTime? ReservationDate { get; set; }
 
     public string? Status { get; set; }
 
-    public virtual Book? Book { get; set; }
+    public virtual BookLocation? BookLocation { get; set; }
 
     public virtual User? User { get; set; }
 }

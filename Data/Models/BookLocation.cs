@@ -14,4 +14,6 @@ public partial class BookLocation
     public virtual Book Book { get; set; } = null!;
 
     public virtual Location Location { get; set; } = null!;
+
+    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 }
