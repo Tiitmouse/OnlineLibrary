@@ -56,13 +56,16 @@
                                     <td>@library.LocationName (@library.LocationAddress)</td>
                                     <td>@(library.IsAvailable ? "available" : "not available")</td>
                                     <td>
-                                        @if (library.IsAvailable)
+                                        @if (!isAdmin)
                                         {
-                                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal" data-book-location-id="@library.BookLocationId">Reserve</button>
-                                        }
-                                        else
-                                        {
-                                            <button class="btn btn-outline-secondary" disabled="true">Reserve</button>
+                                            @if (library.IsAvailable)
+                                            {
+                                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal" data-book-location-id="@library.BookLocationId">Reserve</button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-outline-secondary" disabled="true">Reserve</button>
+                                            }
                                         }
                                     </td>
                                 </tr>
@@ -71,7 +74,7 @@
                         </table>
                     </div>
                     <div>
-                        <h3 class="box-title mt-5">Ratings 4.6</h3>
+                        <h3 class="box-title mt-5">Ratings 4.6</h3> // TODO Implement ratings
                     </div>
                 </div>
             </div>
