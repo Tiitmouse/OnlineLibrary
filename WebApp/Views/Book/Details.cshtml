@@ -1,0 +1,65 @@
+@model BookViewModel
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="/css/details.css" rel="stylesheet">
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            @* -------------------------------- title and author --------------------------------*@
+            <h3 class="card-title d-flex justify-content" style="justify-content: start; gap: 3rem">
+                <span>
+                    @Model.Title   
+                </span>
+                <span>
+                    |  
+                </span>
+                <span>
+                   @Model.AuthorName 
+                </span>
+                 
+            </h3>
+            @* -------------------------------- genre -------------------------------- *@
+            <h6 class="card-subtitle">@Model.GenreName</h6>
+            @* -------------------------------- book cover -------------------------------- *@
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-6">
+                    <div class="white-box text-center">
+                        <img src="https://i.pinimg.com/originals/00/ec/d9/00ecd9ee4a5c53ff2c65c189df7e48ec.gif" class="img-responsive" style="height: 600px;width: 430px">
+                    </div>
+                </div>
+                @* -------------------------------- summary -------------------------------- *@
+                <div class="col-lg-7 col-md-7 col-sm-6">
+                    <h4 class="box-title mt-5">Quick summary</h4>
+                    <p>@Model.Description</p>
+                    @* -------------------------------- availability -------------------------------- *@
+                    <h3 class="box-title mt-5">Availability</h3>
+                    <div class="table-responsive">
+                        <table class="table table-product">
+                            <tbody>
+                            <tr>
+                                <td>Library one</td>
+                                <td>available</td>
+                                <td>
+                                    <a class="btn btn-success">Reserve</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Library two</td>
+                                <td>not available</td>
+                                <td>
+                                    <a class="btn btn-outline-secondary">Reserve</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @* -------------------------------- Ratings -------------------------------- *@ @*TODO implement maybe later*@
+                    <div>
+                        <h3 class="box-title mt-5">Ratings 4.6</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

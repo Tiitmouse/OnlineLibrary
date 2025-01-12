@@ -1,3 +1,9 @@
+body{
+  background-color: #edf1f5;
+  margin-top:20px;
+}
+/*TODO in books list add white bg as to the card in details.css*/
+
 html {
   font-size: 14px;
 }

@@ -44,5 +44,18 @@ namespace WebApp.Controllers
             }
             return RedirectToAction("List");
         }
+        
+        public IActionResult Details(string returnUrl)
+        {
+            return View();
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var book = await _bookService.Get(id);
+            var bookModel = _mapper.Map<BookViewModel>(book);
+            return View(bookModel);
+        }
     }
 }

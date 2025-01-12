@@ -37,7 +37,7 @@
                 <td>@book.Isbn</td>
                 <td>@book.PublicationYear</td>
                 <td>
-                    <a  class="btn btn-outline-dark">See Details</a>  @* href="@Url.Action("Details", "Book", new { id = book.IdBook })"  *@
+                    <a href="@Url.Action("Details", "Book", new {id = @book.IdBook})" class="btn btn-outline-dark">See Details</a>  
                 </td>
             </tr>
         }
