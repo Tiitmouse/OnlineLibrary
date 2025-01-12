@@ -2,10 +2,12 @@ using AutoMapper;
 using Data.Dto;
 using Data.Models;
 using Data.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
-
+[Authorize]
+[Route("api/[controller]")]
 public class ReservationController : ControllerBase
 {
     private readonly IReservationService _reservationService;

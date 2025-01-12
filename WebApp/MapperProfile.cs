@@ -20,6 +20,10 @@ public class MapperProfile : Profile
         CreateMap<Author, AuthorViewModel>();
         CreateMap<AuthorViewModel, Author>();
 
+        CreateMap<Reservation, ReservationViewModel>()
+            .ForMember(r => r.BookId, opt => opt.MapFrom(r => r.BookLocation.Book.IdBook))
+            .ForMember(r => r.LocationId, opt => opt.MapFrom(r => r.BookLocation.Location.IdLocation));
+        CreateMap<ReservationViewModel, Reservation>();
 
     }
 }

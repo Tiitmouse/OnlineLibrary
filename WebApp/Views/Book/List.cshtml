@@ -22,7 +22,7 @@
             <th scope="col">Genre</th>
             <th scope="col">ISBN</th>
             <th scope="col">Publication</th>
-            <th scope="col">Reservation status</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -36,13 +36,17 @@
                 <td>@book.GenreName</td>
                 <td>@book.Isbn</td>
                 <td>@book.PublicationYear</td>
-                <td>x</td>
+                <td>
+                    <a  class="btn btn-outline-dark">See Details</a>  @* href="@Url.Action("Details", "Book", new { id = book.IdBook })"  *@
+                </td>
             </tr>
         }
         </tbody>
     </table>
     <button type="submit" class="btn btn-danger">Delete Selected Books</button>
 </form>
+
+
 
 @section Scripts {
     <script>

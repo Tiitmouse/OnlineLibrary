@@ -8,6 +8,7 @@ namespace Data.Services;
 public interface IReservationService
 {
     public Task<Reservation> Get(int id);
+    public Task<Reservation> GetByBookId(int bookId);
     public Task Cancel(int id);
     public Task ChangeStatus(int id, bool newStatus);
     public Task Reserve(Reservation newReservation);
@@ -41,6 +42,24 @@ public class ReservationService : IReservationService
         }
         await _logService.Create($"Reservation with ID {id} fetched successfully", Importance.Low);
         return reservation;
+    }
+
+    public async Task<Reservation> GetByBookId(int bookId)
+    {
+        Reservation reservation = await _context.Reservations
+            .AsNoTracking()
+            .Include(r => r.BookLocation)
+            .Include(r => r.BookLocation.Book)
+            .Include(r => r.BookLocation.Location)
+            .Include(r => r.User)
+            .FirstOrDefaultAsync(r => r.BookLocation.BookId == bookId);
+        if (reservation == null)
+        {
+            await _logService.Create("Failed to fetch reservation with book ID {bookId}, because there is none with the same ID", Importance.Low);
+            throw new NotFoundException($"Reservation with book id {bookId} not found");
+        }
+          await _logService.Create($"Reservation with book ID {bookId} fetched successfully", Importance.Low);
+          return reservation;
     }
 
     public async Task Cancel(int id)
