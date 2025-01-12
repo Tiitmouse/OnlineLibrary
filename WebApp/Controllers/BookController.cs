@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using AutoMapper;
 using Data.Dto;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApp.Models;
 
 namespace WebApp.Controllers
@@ -12,13 +13,17 @@ namespace WebApp.Controllers
     {
         private readonly IBookService _bookService;
         private readonly ILocationService _locationService;
+        private readonly IAuthorService _authorService;
+        private readonly IGenreService _genreService;
         private readonly IMapper _mapper;
 
-        public BookController(IBookService bookService, IMapper mapper, ILocationService locationService)
+        public BookController(IBookService bookService, IMapper mapper, ILocationService locationService, IAuthorService authorService, IGenreService genreService)
         {
             _bookService = bookService;
             _mapper = mapper;
             _locationService = locationService;
+            _authorService = authorService;
+            _genreService = genreService;
         }
 
         [HttpGet]
@@ -42,15 +47,17 @@ namespace WebApp.Controllers
         {
             foreach (var bookId in bookIds)
             {
+                await _locationService.DeleteByBookId(bookId);
                 await _bookService.Delete(bookId);
             }
             return RedirectToAction("List");
         }
         
         [HttpPost]
-        public async Task<IActionResult> DeleteSingleBook(int bookId)
+        public async Task<IActionResult> DeleteSingleBook(int IdBook)
         {
-            await _bookService.Delete(bookId);
+            await _locationService.DeleteByBookId(IdBook);
+            await _bookService.Delete(IdBook);
             return RedirectToAction("List");
         }
         
@@ -65,7 +72,7 @@ namespace WebApp.Controllers
             var book = await _bookService.Get(id);
             var libraries = await _locationService.GetByBookID(id);
             
-            DetailsBookModel model = new DetailsBookModel
+            DetailsBookViewModel viewModel = new DetailsBookViewModel
             {
                 IdBook = book.IdBook,
                 Title = book.Title,
@@ -84,15 +91,17 @@ namespace WebApp.Controllers
                 }).ToList()
             };
 
-            return View(model);
+            return View(viewModel);
         }
         
         public async Task<IActionResult> Edit(int id)
         {
             var book = await _bookService.Get(id);
             var libraries = await _locationService.GetByBookID(id);
-            
-            DetailsBookModel model = new DetailsBookModel
+            var genres = await _genreService.GetAll();
+            var authors = await _authorService.GetAll();
+
+            DetailsBookViewModel viewModel = new DetailsBookViewModel
             {
                 IdBook = book.IdBook,
                 Title = book.Title,
@@ -108,9 +117,11 @@ namespace WebApp.Controllers
                     LocationAddress = l.Location.Address,
                     IsAvailable = !l.Reservations.Any(r => r.BookLocation.BookId == id),
                     BookLocationId = l.Id
-                }).ToList()
+                }).ToList(),
+                Genres = genres.Select(g => new SelectListItem { Value = g.GenreName, Text = g.GenreName }).ToList(),
+                Authors = authors.Select(a => new SelectListItem { Value = a.AuthorName, Text = a.AuthorName }).ToList()
             };
-            return View(model);
+            return View(viewModel);
         }
         
         [HttpPost]

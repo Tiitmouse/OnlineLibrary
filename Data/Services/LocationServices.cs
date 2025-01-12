@@ -10,6 +10,7 @@ public interface ILocationService
     public Task<Location> Get(int id);
     public Task<List<BookLocation>> GetByBookID(int id);
     public Task Delete(int id);
+    public Task DeleteByBookId(int bookId);
     public Task Update(int id, Location location);
     public Task Create(Location newLocation);
     public Task<List<Location>> GetAll();
@@ -62,6 +63,23 @@ public class LocationServices : ILocationService
         }
         _context.Locations.Remove(location);
         await _logService.Create("Location with ID {id} successfully deleted", Importance.High);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteByBookId(int bookId)
+    {
+        var bookLocations = await _context.BookLocations
+            .Where(bl => bl.BookId == bookId)
+            .ToListAsync();
+
+        if (!bookLocations.Any())
+        {
+            await _logService.Create($"No locations found for book with ID {bookId}", Importance.Low);
+            throw new NotFoundException($"No locations found for book with id {bookId}");
+        }
+
+        _context.BookLocations.RemoveRange(bookLocations);
+        await _logService.Create($"All locations for book with ID {bookId} successfully deleted", Importance.High);
         await _context.SaveChangesAsync();
     }
 
