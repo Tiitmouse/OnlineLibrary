@@ -97,7 +97,8 @@ public class UserServices : IUserServices
 
         var claims = new List<Claim>() {
             new Claim(ClaimTypes.Name, username),
-            new Claim("admin", existingUser.IsAdmin.ToString())
+            new Claim("admin", existingUser.IsAdmin.ToString()),
+            new Claim("id", existingUser.IdUser.ToString())
         };
 
         var claimsIdentity = new ClaimsIdentity(
