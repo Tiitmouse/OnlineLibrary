@@ -47,6 +47,13 @@ namespace WebApp.Controllers
             return RedirectToAction("List");
         }
         
+        [HttpPost]
+        public async Task<IActionResult> DeleteSingleBook(int bookId)
+        {
+            await _bookService.Delete(bookId);
+            return RedirectToAction("List");
+        }
+        
         public IActionResult Details(string returnUrl)
         {
             return View();
@@ -80,9 +87,39 @@ namespace WebApp.Controllers
             return View(model);
         }
         
-        public IActionResult Edit(string returnUrl)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var book = await _bookService.Get(id);
+            var libraries = await _locationService.GetByBookID(id);
+            
+            DetailsBookModel model = new DetailsBookModel
+            {
+                IdBook = book.IdBook,
+                Title = book.Title,
+                Description = book.Description,
+                PublicationYear = book.PublicationYear,
+                Isbn = book.Isbn,
+                AuthorName = book.Author.AuthorName,
+                GenreName = book.Genre.GenreName,
+                Libraries = libraries.Select(l => new LibraryAvailabilityViewModel
+                {
+                    LocationId = l.LocationId,
+                    LocationName = l.Location.LocationName,
+                    LocationAddress = l.Location.Address,
+                    IsAvailable = !l.Reservations.Any(r => r.BookLocation.BookId == id),
+                    BookLocationId = l.Id
+                }).ToList()
+            };
+            return View(model);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> EditAction(int cBookId, BookViewModel newBook)
+        {
+            var bookEntity = _mapper.Map<Book>(newBook);
+            await _bookService.Update(cBookId, bookEntity);
+
+            return RedirectToAction("List");
         }
     }
 }

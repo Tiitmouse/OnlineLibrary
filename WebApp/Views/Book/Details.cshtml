@@ -19,7 +19,7 @@
 <div class="container">
     <div class="card">
         <div class="card-body">
-            <h3 class="card-title d-flex justify-content" style="justify-content: start; gap: 3rem">
+            <h3 class="card-title d-flex justify-content-start g-3">
                 <span>
                     @Model.Title
                 </span>
@@ -39,7 +39,7 @@
                     @if (isAdmin)
                     {
                         <div>
-                            <a href="@Url.Action("Edit", "Book", new {Model})" class="btn btn-primary" style="margin-top: 20px">Edit</a> 
+                            <a href="@Url.Action("Edit", "Book", new {id = @Model.IdBook})" class="btn btn-primary" style="margin-top: 20px">Edit</a> 
                         </div>
                     }
                 </div>

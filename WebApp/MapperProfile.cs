@@ -28,5 +28,16 @@ public class MapperProfile : Profile
             .ForMember(l => l.LocationAddress, opt => opt.MapFrom(l => l.Location.Address));
         CreateMap<LibraryAvailabilityViewModel, BookLocation>();
 
+        CreateMap<Book, DetailsBookModel>()
+            .ForMember(d => d.AuthorName, opt => opt.MapFrom(b => b.Author.AuthorName))
+            .ForMember(d => d.GenreName, opt => opt.MapFrom(b => b.Genre.GenreName))
+            .ForMember(d => d.Libraries, opt => opt.MapFrom(b => b.BookLocations.Select(l => new LibraryAvailabilityViewModel
+            {
+                LocationId = l.Location.IdLocation,
+                LocationName = l.Location.LocationName,
+                LocationAddress = l.Location.Address,
+                IsAvailable = !l.Reservations.Any(r => r.BookLocation.BookId == b.IdBook),
+                BookLocationId = l.Id
+            })));
     }
 }
