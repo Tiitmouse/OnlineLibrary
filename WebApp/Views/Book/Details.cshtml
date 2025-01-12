@@ -5,6 +5,7 @@
 
 @{
     var message = TempData["Message"] as string;
+    var isAdmin = User.Claims.FirstOrDefault(c => c.Type == "admin")?.Value == "True";
     int userId = User.Claims.FirstOrDefault(c => c.Type == "id") != null ? int.Parse(User.Claims.FirstOrDefault(c => c.Type == "id").Value) : 0;
 }
 
@@ -39,6 +40,12 @@
                         <div class="white-box text-center">
                             <img src="https://i.pinimg.com/originals/00/ec/d9/00ecd9ee4a5c53ff2c65c189df7e48ec.gif" class="img-responsive" style="height: 600px;width: 430px">
                         </div>
+                        @if (isAdmin)
+                        {
+                            <div>
+                                <button class="btn btn-primary" style="margin-top: 30px; margin-bottom: 0px">Edit</button>
+                            </div>
+                        }
                     </div>
                     @* -------------------------------- summary -------------------------------- *@
                     <div class="col-lg-7 col-md-7 col-sm-6">
