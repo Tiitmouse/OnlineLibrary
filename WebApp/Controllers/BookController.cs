@@ -79,5 +79,10 @@ namespace WebApp.Controllers
 
             return View(model);
         }
+        
+        public IActionResult Edit(string returnUrl)
+        {
+            return View();
+        }
     }
 }
