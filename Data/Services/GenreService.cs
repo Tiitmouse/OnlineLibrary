@@ -12,6 +12,7 @@ public interface IGenreService
     public Task Update(int id, Genre genre);
     public Task Create(Genre genre);
     public Task<List<Genre>> GetAll();
+    public Task<Genre> GetByName(string newBookGenreName);
 }
 
 public class GenreService : IGenreService
@@ -84,5 +85,10 @@ public class GenreService : IGenreService
         return await _context.Genres
             .AsNoTracking()
             .ToListAsync();
+    }
+
+    public async Task<Genre> GetByName(string newBookGenreName)
+    {
+        return await _context.Genres.FirstOrDefaultAsync(g => g.GenreName == newBookGenreName) ?? throw new NotFoundException("Genre with name {newBookGenreName} not found");
     }
 }

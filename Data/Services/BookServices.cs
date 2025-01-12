@@ -71,6 +71,8 @@ public class BookServices : IBookService
         original.Description = book.Description;
         original.PublicationYear = book.PublicationYear;
         original.Isbn = book.Isbn;
+        original.GenreId = book.GenreId;
+        original.AuthorId = book.AuthorId;
 
         _context.Books.Update(original);
         await _logService.Create("Book with ID {id} successfully updated", Importance.High);

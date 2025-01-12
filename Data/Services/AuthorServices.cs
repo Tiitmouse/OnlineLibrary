@@ -12,6 +12,7 @@ public interface IAuthorService
     public Task Update(int id, Author author);
     public Task Create(Author author);
     public Task<List<Author>> GetAll();
+    public Task<Author> GetByName(string newBookAuthorName);
 }
 
 public class AuthorServices : IAuthorService
@@ -87,5 +88,10 @@ public class AuthorServices : IAuthorService
         return await _context.Authors
             .AsNoTracking()
             .ToListAsync();
+    }
+
+    public async Task<Author> GetByName(string newBookAuthorName)
+    {
+        return await _context.Authors.FirstOrDefaultAsync(a => a.AuthorName == newBookAuthorName) ?? throw new NotFoundException($"Author {newBookAuthorName} not found");
     }
 }
