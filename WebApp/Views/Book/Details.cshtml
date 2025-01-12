@@ -1,4 +1,4 @@
-@model BookViewModel
+@model DetailsBookModel
 
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <link href="/css/details.css" rel="stylesheet">
@@ -37,20 +37,16 @@
                     <div class="table-responsive">
                         <table class="table table-product">
                             <tbody>
-                            <tr>
-                                <td>Library one</td>
-                                <td>available</td>
-                                <td>
-                                    <a class="btn btn-success">Reserve</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Library two</td>
-                                <td>not available</td>
-                                <td>
-                                    <a class="btn btn-outline-secondary">Reserve</a>
-                                </td>
-                            </tr>
+                            @foreach (var library in Model.Libraries)
+                            {
+                                <tr>
+                                    <td>@library.LocationName (@library.LocationAddress)</td>
+                                    <td>@(library.IsAvailable ? "available" : "not available")</td>
+                                    <td>
+                                        <a class="btn @(library.IsAvailable ? "btn-success" : "btn-outline-secondary")" @(library.IsAvailable ? "" : "disabled='true'")>Reserve</a>
+                                    </td>
+                                </tr>
+                            }
                             </tbody>
                         </table>
                     </div>

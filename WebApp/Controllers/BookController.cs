@@ -11,12 +11,14 @@ namespace WebApp.Controllers
     public class BookController : Controller
     {
         private readonly IBookService _bookService;
+        private readonly ILocationService _locationService;
         private readonly IMapper _mapper;
 
-        public BookController(IBookService bookService, IMapper mapper)
+        public BookController(IBookService bookService, IMapper mapper, ILocationService locationService)
         {
             _bookService = bookService;
             _mapper = mapper;
+            _locationService = locationService;
         }
 
         [HttpGet]
@@ -54,8 +56,27 @@ namespace WebApp.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var book = await _bookService.Get(id);
-            var bookModel = _mapper.Map<BookViewModel>(book);
-            return View(bookModel);
+            var libraries = await _locationService.GetByBookID(id);
+            
+            DetailsBookModel model = new DetailsBookModel
+            {
+                IdBook = book.IdBook,
+                Title = book.Title,
+                Description = book.Description,
+                PublicationYear = book.PublicationYear,
+                Isbn = book.Isbn,
+                AuthorName = book.Author.AuthorName,
+                GenreName = book.Genre.GenreName,
+                Libraries = libraries.Select(l => new LibraryAvailabilityViewModel
+                {
+                    LocationId = l.LocationId,
+                    LocationName = l.Location.LocationName,
+                    LocationAddress = l.Location.Address,
+                    IsAvailable = !l.Reservations.Any(r => r.BookLocation.BookId == id)
+                }).ToList()
+            };
+
+            return View(model);
         }
     }
 }

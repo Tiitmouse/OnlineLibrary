@@ -8,6 +8,7 @@ namespace Data.Services;
 public interface ILocationService
 {
     public Task<Location> Get(int id);
+    public Task<List<BookLocation>> GetByBookID(int id);
     public Task Delete(int id);
     public Task Update(int id, Location location);
     public Task Create(Location newLocation);
@@ -38,6 +39,18 @@ public class LocationServices : ILocationService
         await _logService.Create("Location with ID {id} fetched successfully", Importance.Low);
         return location;
     }
+
+    public async Task<List<BookLocation>> GetByBookID(int id)
+    {
+        return await _context.BookLocations
+            .AsNoTracking()
+            .Where(l => l.BookId == id) 
+            .Include(l => l.Location)
+            .Include(b => b.Book)
+            .Include(r => r.Reservations)
+            .ToListAsync();
+    }
+
 
     public async Task Delete(int id)
     {

@@ -24,6 +24,12 @@ public class MapperProfile : Profile
             .ForMember(r => r.BookId, opt => opt.MapFrom(r => r.BookLocation.Book.IdBook))
             .ForMember(r => r.LocationId, opt => opt.MapFrom(r => r.BookLocation.Location.IdLocation));
         CreateMap<ReservationViewModel, Reservation>();
+        
+        CreateMap<BookLocation, LibraryAvailabilityViewModel>()
+            .ForMember(l => l.LocationId, opt => opt.MapFrom(l => l.Location.IdLocation))
+            .ForMember(l => l.LocationName, opt => opt.MapFrom(l => l.Location.LocationName))
+            .ForMember(l => l.LocationAddress, opt => opt.MapFrom(l => l.Location.Address));
+        CreateMap<LibraryAvailabilityViewModel, BookLocation>();
 
     }
 }
