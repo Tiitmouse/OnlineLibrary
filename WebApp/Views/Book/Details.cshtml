@@ -3,6 +3,17 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <link href="/css/details.css" rel="stylesheet">
 
+@{
+    var message = TempData["Message"] as string;
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-success">
+        @message
+    </div>
+}
+
 <div class="container">
     <div class="card">
         <div class="card-body">
@@ -43,7 +54,18 @@
                                     <td>@library.LocationName (@library.LocationAddress)</td>
                                     <td>@(library.IsAvailable ? "available" : "not available")</td>
                                     <td>
-                                        <a class="btn @(library.IsAvailable ? "btn-success" : "btn-outline-secondary")" @(library.IsAvailable ? "" : "disabled='true'")>Reserve</a>
+                                        @if (library.IsAvailable)
+                                        {
+                                            <form asp-action="ReserveBook" asp-controller="Reservation" method="post">
+                                                <input type="hidden" name="BookLocationId" value="@library.BookLocationId" />
+                                                <input type="hidden" name="UserId" value="2" />
+                                                <button type="submit" class="btn btn-success">Reserve</button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-outline-secondary" disabled="true">Reserve</button>
+                                        }
                                     </td>
                                 </tr>
                             }

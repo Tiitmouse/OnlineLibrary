@@ -26,4 +26,13 @@ public class ReservationController : Controller
         return View(reservationViewModel);
     }
     
+    [HttpPost]
+    public async Task<IActionResult> ReserveBook(ReservationViewModel reservationViewModel)
+    {
+        Reservation reservation = _mapper.Map<Reservation>(reservationViewModel);
+        int bookId = await _reservationService.Reserve(reservation);
+
+        TempData["Message"] = "The book has been reserved.";
+        return RedirectToAction("Details", "Book", new { id = bookId });
+    }
 }

@@ -72,7 +72,8 @@ namespace WebApp.Controllers
                     LocationId = l.LocationId,
                     LocationName = l.Location.LocationName,
                     LocationAddress = l.Location.Address,
-                    IsAvailable = !l.Reservations.Any(r => r.BookLocation.BookId == id)
+                    IsAvailable = !l.Reservations.Any(r => r.BookLocation.BookId == id),
+                    BookLocationId = l.Id
                 }).ToList()
             };
 

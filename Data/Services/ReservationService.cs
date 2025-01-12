@@ -11,7 +11,7 @@ public interface IReservationService
     public Task<Reservation> GetByBookId(int bookId);
     public Task Cancel(int id);
     public Task ChangeStatus(int id, bool newStatus);
-    public Task Reserve(Reservation newReservation);
+    public Task<int> Reserve(Reservation newReservation);
     public Task<List<Reservation>> GetAll();
 }
 
@@ -88,18 +88,30 @@ public class ReservationService : IReservationService
         await _context.SaveChangesAsync();
     }
 
-    public async Task Reserve(Reservation newReservation)
+    public async Task<int> Reserve(Reservation newReservation)
     {
-        Reservation? reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.BookLocation.BookId == newReservation.BookLocation.BookId);
+        Reservation? reservation = await _context.Reservations.FirstOrDefaultAsync(r => newReservation.BookLocation != null && r.BookLocation != null && r.BookLocation.BookId == newReservation.BookLocation.BookId);
+
         if (reservation != null)
         {
             await _logService.Create("Cannot reserve book with ID {reservation.BookLocation.BookId}, because it is already reserved", Importance.Low);
-            throw new AlreadyExistsException($"Reservation for book with ID {newReservation.BookLocation.BookId} already exists");
+            if (newReservation.BookLocation != null)
+                throw new AlreadyExistsException(
+                    $"Reservation for book with ID {newReservation.BookLocation.BookId} already exists");
         }
 
         await _context.Reservations.AddAsync(newReservation);
-        await _logService.Create($"Book with ID {newReservation.BookLocation.BookId} ({newReservation.BookLocation.Location.LocationName}) has been reserved by user {newReservation.User.IdUser}", Importance.High);
+        if (newReservation.BookLocation != null)
+            if (newReservation.User != null)
+                await _logService.Create(
+                    $"Book with ID {newReservation.BookLocation.BookId} ({newReservation.BookLocation.Location.LocationName}) has been reserved by user {newReservation.User.IdUser}",
+                    Importance.High);
         await _context.SaveChangesAsync();
+
+        return _context.BookLocations
+            .Include(bl=> bl.Book)
+            .FirstOrDefault(bl=>bl.Id == newReservation.BookLocationId).Book.IdBook;
+        
     }
 
     public async Task<List<Reservation>> GetAll()
