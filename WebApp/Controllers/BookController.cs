@@ -57,6 +57,12 @@ public class BookController : Controller
         return RedirectToAction("List");
     }
 
+    public async Task<IActionResult> DeleteByAuthorId(int authorid)
+    {
+        await _bookService.DeleteByAuthorId(authorid);
+        return RedirectToAction("List");
+    }
+
     [HttpPost]
     public async Task<IActionResult> DeleteSingleBook(int IdBook)
     {

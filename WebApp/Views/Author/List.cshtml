@@ -1,1 +1,75 @@
-hi from author
+@model List<AuthorViewModel>
+
+<h1>Authors</h1>
+
+<form method="get" asp-action="List">
+    <div class="input-group mb-3">
+        <input type="text" name="searchString" class="form-control" id="searchInput" placeholder="Search by name..." value="@ViewData["CurrentFilter"]"/>
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</form>
+
+<form method="post" asp-action="DeleteSelectedAuthors">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Select</th>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var author in Model)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" name="authorIds" value="@author.IdAuthor"/>
+                </td>
+                <td>@author.IdAuthor</td>
+                <td>
+                    <input type="text" class="form-control" id="newAuthorName_@author.IdAuthor" value="@author.AuthorName"/>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" onclick="editAuthor(@author.IdAuthor)">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-danger">Delete Selected Authors</button>
+</form>
+
+@section Scripts {
+    <script>
+        function editAuthor(authorId) {
+            var newAuthorName = document.getElementById('newAuthorName_' + authorId).value;
+            if (newAuthorName) {
+                var form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/Author/Edit';
+
+                var idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'IdAuthor';
+                idInput.value = authorId;
+                form.appendChild(idInput);
+
+                var nameInput = document.createElement('input');
+                nameInput.type = 'hidden';
+                nameInput.name = 'AuthorName';
+                nameInput.value = newAuthorName;
+                form.appendChild(nameInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            } else {
+                alert('Please enter a new author name.');
+            }
+        }
+    </script>
+}

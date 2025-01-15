@@ -10,6 +10,7 @@ public interface IBookService
 {
     public Task<Book> Get(int id);
     public Task Delete(int id);
+    public Task DeleteByAuthorId(int authorId);
     public Task Update(int id, Book book);
     public Task Create(Book newBook);
     public Task<List<Book>> GetAll();
@@ -55,6 +56,19 @@ public class BookServices : IBookService
         }
         _context.Books.Remove(book);
         await _logService.Create("Book with ID {id} successfully deleted", Importance.High);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteByAuthorId(int authorId)
+    {
+        var books = await _context.Books.Where(b => b.AuthorId == authorId).ToListAsync();
+        if (books == null || !books.Any())
+        {
+            await _logService.Create($"No books found for author with ID {authorId}", Importance.Low);
+            return;
+        }
+        _context.Books.RemoveRange(books);
+        await _logService.Create($"All books for author with ID {authorId} successfully deleted", Importance.High);
         await _context.SaveChangesAsync();
     }
 
