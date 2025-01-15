@@ -17,6 +17,9 @@ public class MapperProfile : Profile
         CreateMap<Genre, GenreViewModel>();
         CreateMap<GenreViewModel, Genre>();
         
+        CreateMap<Location, LocationViewModel>();
+        CreateMap<LocationViewModel, Location>();
+        
         CreateMap<Author, AuthorViewModel>();
         CreateMap<AuthorViewModel, Author>();
 
