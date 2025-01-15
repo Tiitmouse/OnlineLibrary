@@ -36,7 +36,10 @@ public class LocationController : Controller
         if (!string.IsNullOrEmpty(searchString))
         {
             searchString = searchString.ToLower();
-            locations = locations.Where(l => l.LocationName.ToLower().Contains(searchString)).ToList();
+            locations = locations
+                .Where(l => l.LocationName.ToLower().Contains(searchString) ||
+                            l.Address.ToLower().Contains(searchString))
+                .ToList();
         }
 
         List<LocationViewModel> locationViewModel = _mapper.Map<List<LocationViewModel>>(locations);

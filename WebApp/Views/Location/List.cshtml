@@ -6,7 +6,7 @@
 
 <form method="get" asp-action="List">
     <div class="input-group mb-3">
-        <input type="text" name="searchString" class="form-control" id="searchInput" placeholder="Search by name..." value="@ViewData["CurrentFilter"]"/>
+        <input type="text" name="searchString" class="form-control" id="searchInput" placeholder="Search by title..." value="@ViewData["CurrentFilter"]" />
         <div class="input-group-append">
             <button type="submit" class="btn btn-primary">Search</button>
         </div>
@@ -72,4 +72,14 @@
             document.getElementById('deleteForm').submit();
         });
     </script>
+        <script>
+            const placeholders = ["Search by library...", "Search by adress..."];
+            let index = 0;
+            const searchInput = document.getElementById("searchInput");
+    
+            setInterval(() => {
+                searchInput.placeholder = placeholders[index];
+                index = (index + 1) % placeholders.length;
+            }, 2000);
+        </script>
 }
