@@ -1,5 +1,7 @@
 @model List<AuthorViewModel>
 
+<link href="/css/authorList.css" rel="stylesheet">
+
 <h1>Authors</h1>
 
 <form method="get" asp-action="List">
@@ -18,7 +20,6 @@
             <th scope="col">Select</th>
             <th scope="col">ID</th>
             <th scope="col">Name</th>
-            <th scope="col">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -30,12 +31,14 @@
                 </td>
                 <td>@author.IdAuthor</td>
                 <td>
-                    <input type="text" class="form-control" id="newAuthorName_@author.IdAuthor" value="@author.AuthorName"/>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary" onclick="editAuthor(@author.IdAuthor)">
-                        Edit
-                    </button>
+                    <form method="post" action="@Url.Action("Edit", "Author")" >
+                        <input type="hidden" name="IdAuthor" value="@author.IdAuthor"/>
+                        <div class="form-group mb-2 mr-2">
+                            <input type="text" class="form-control" name="AuthorName" value="@author.AuthorName" style="width: 300px"/>
+                            <button type="submit" class="btn btn-success mb-2">Update</button>
+                        </div>
+                        
+                    </form>
                 </td>
             </tr>
         }
@@ -43,33 +46,3 @@
     </table>
     <button type="submit" class="btn btn-danger">Delete Selected Authors</button>
 </form>
-
-@section Scripts {
-    <script>
-        function editAuthor(authorId) {
-            var newAuthorName = document.getElementById('newAuthorName_' + authorId).value;
-            if (newAuthorName) {
-                var form = document.createElement('form');
-                form.method = 'post';
-                form.action = '/Author/Edit';
-
-                var idInput = document.createElement('input');
-                idInput.type = 'hidden';
-                idInput.name = 'IdAuthor';
-                idInput.value = authorId;
-                form.appendChild(idInput);
-
-                var nameInput = document.createElement('input');
-                nameInput.type = 'hidden';
-                nameInput.name = 'AuthorName';
-                nameInput.value = newAuthorName;
-                form.appendChild(nameInput);
-
-                document.body.appendChild(form);
-                form.submit();
-            } else {
-                alert('Please enter a new author name.');
-            }
-        }
-    </script>
-}
