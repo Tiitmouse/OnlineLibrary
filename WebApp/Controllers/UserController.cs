@@ -80,4 +80,25 @@ public class UserController : Controller
         var userDetails = _mapper.Map<UserDetailsViewModel>(user);
         return View(userDetails);
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> EditUser(UserDetailsViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var userDto = _mapper.Map<UserDto>(model);
+            var username = User.Identity.Name; // Assuming the username is stored in the identity
+            await _userServices.UpdateUser(userDto, username);
+
+            return Json(new { success = true });
+        }
+
+        // Return validation errors
+        var errors = ModelState.ToDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+        );
+
+        return Json(new { success = false, errors });
+    }
 }
