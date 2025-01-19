@@ -1,22 +1,23 @@
 @model UserDetailsViewModel
 
 <link href="/css/userDetails.css" rel="stylesheet">
+<link href="/css/NonPrimaryEntities.css" rel="stylesheet">
 
 <h2>Profile</h2>
 
 <form id="editUserFullNameForm" method="post" class="form-horizontal">
-    <input type="hidden" asp-for="IdUser" />
-    <div class="form-group row">
-        <label asp-for="Username" class="col-sm-2 col-form-label" >Username</label> 
+    <input type="hidden" asp-for="IdUser"/>
+    <div class="form-group row" style="padding-bottom: 15px">
+        <label asp-for="Username" class="col-sm-2 col-form-label">Username</label>
         <div class="col-sm-10">
-            <input asp-for="Username" class="form-control" value="@Model.Username" readonly />
+            <input asp-for="Username" class="form-control" value="@Model.Username" readonly/>
             <span asp-validation-for="Username" class="text-danger"></span>
         </div>
     </div>
     <div class="form-group row">
         <label asp-for="FullName" class="col-sm-2 col-form-label">Full name</label>
         <div class="col-sm-8">
-            <input asp-for="FullName" class="form-control" value="@Model.FullName" />
+            <input asp-for="FullName" class="form-control" value="@Model.FullName"/>
             <span asp-validation-for="FullName" class="text-danger"></span>
         </div>
         <div class="col-sm-2">
@@ -27,7 +28,7 @@
 
 <form id="editUserPasswordForm" method="post" class="form-horizontal" style="margin-top: 20px">
     <input type="hidden" asp-for="Username"/>
-    <div class="form-group row">
+    <div class="form-group row" style="padding-bottom: 15px">
         <label for="oldPassword" class="col-sm-2 col-form-label">Old Password</label>
         <div class="col-sm-10">
             <input id="oldPassword" name="oldPassword" type="password" class="form-control"/>
@@ -48,21 +49,69 @@
     </div>
 </form>
 
+<div id="alertContainer" style="padding-bottom: 15px"></div>
+
+<!-- Confirmation Modal for Full Name Update -->
+<div class="modal fade" id="confirmModalFullName" tabindex="-1" aria-labelledby="confirmModalLabelFullName" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabelFullName">Confirm Update</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to update your full name?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmUpdateFullNameButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal for Password Update -->
+<div class="modal fade" id="confirmModalPassword" tabindex="-1" aria-labelledby="confirmModalLabelPassword" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabelPassword">Confirm Update</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to update your password?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmUpdatePasswordButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
     <script>
         $(document).ready(function () {
             $('#editUserFullNameForm').submit(function (event) {
                 event.preventDefault();
-                var formData = $(this).serialize();
+                $('#confirmModalFullName').modal('show');
+            });
+
+            $('#editUserPasswordForm').submit(function (event) {
+                event.preventDefault();
+                $('#confirmModalPassword').modal('show');
+            });
+
+            $('#confirmUpdateFullNameButton').click(function () {
+                var formData = $('#editUserFullNameForm').serialize();
                 $.ajax({
                     type: 'POST',
                     url: '@Url.Action("EditUserFullName", "User")',
                     data: formData,
                     success: function (response) {
                         if (response.success) {
-                            alert('Full name updated successfully');
-                            window.location.href = '@Url.Action("Details", "User", new { username = Model.Username })';
+        $('#alertContainer').html('<div class="alert alert-success" role="alert">Full name updated successfully</div>');
                         } else {
                             var errors = response.errors;
                             for (var key in errors) {
@@ -75,22 +124,20 @@
                         }
                     },
                     error: function () {
-                        alert('An error occurred while updating the full name.');
+    $('#alertContainer').html('<div class="alert alert-danger" role="alert">An error occurred while updating the full name.</div>');
                     }
                 });
             });
 
-            $('#editUserPasswordForm').submit(function (event) {
-                event.preventDefault();
-                var formData = $(this).serialize();
+            $('#confirmUpdatePasswordButton').click(function () {
+                var formData = $('#editUserPasswordForm').serialize();
                 $.ajax({
                     type: 'POST',
                     url: '@Url.Action("EditUserPassword", "User")',
                     data: formData,
                     success: function (response) {
                         if (response.success) {
-                            alert('Password updated successfully');
-                            window.location.href = '@Url.Action("Details", "User", new { username = Model.Username })';
+        $('#alertContainer').html('<div class="alert alert-success" role="alert">Password updated successfully</div>');
                         } else {
                             var errors = response.errors;
                             for (var key in errors) {
@@ -103,7 +150,7 @@
                         }
                     },
                     error: function () {
-                        alert('An error occurred while updating the password.');
+    $('#alertContainer').html('<div class="alert alert-danger" role="alert">An error occurred while updating the password.</div>');
                     }
                 });
             });
