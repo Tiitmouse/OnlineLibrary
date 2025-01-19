@@ -66,4 +66,13 @@ public class LocationController : Controller
 
         return View("List");
     }
+    
+    public async Task<IActionResult> Details(int locationId)
+    {
+        var reservations = await _locationService.GetReservationsByLocation(locationId);
+        var reservationDetails = _mapper.Map<List<ReservationDetailsViewModel>>(reservations);
+
+        return View("Details", reservationDetails);
+    }
+
 }

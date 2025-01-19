@@ -14,6 +14,8 @@ public interface ILocationService
     public Task Update(int id, Location location);
     public Task Create(Location newLocation);
     public Task<List<Location>> GetAll();
+    Task<List<Reservation>> GetReservationsByLocation(int locationId); // New method
+
 }
 
 public class LocationServices : ILocationService
@@ -118,6 +120,16 @@ public class LocationServices : ILocationService
     {
         return await _context.Locations
             .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<List<Reservation>> GetReservationsByLocation(int locationId)
+    {
+        return await _context.Reservations
+            .Include(r => r.BookLocation)
+            .ThenInclude(bl => bl.Book)
+            .Include(r => r.User)
+            .Where(r => r.BookLocation.LocationId == locationId)
             .ToListAsync();
     }
 }

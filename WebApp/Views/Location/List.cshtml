@@ -39,10 +39,7 @@
                             <button type="submit" class="btn btn-success mb-2">Update</button>
                         </div>
                     </form>
-                    <form method="post" action="@Url.Action("Details", "Location")">
-                        <input type="hidden" name="IdLocation" value="@location.IdLocation"/>
-                        <button type="submit" class="btn btn-outline-dark mb-2 seereservations">See Reservations</button>
-                    </form>
+                    <a href="@Url.ActionLink("Details", "Location", new { locationId = location.IdLocation })" class="btn btn-outline-dark mb-2 seereservations">See Reservations</a>
                 </td>
             </tr>
         }
