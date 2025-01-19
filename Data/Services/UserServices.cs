@@ -18,6 +18,8 @@ public interface IUserServices
     Task<string> Login(string username, string password);
     Task<User> GetUser(string username);
     Task<User> UpdateUser(UserDto userDto, string username);
+    Task<User> UpdateUserFullName(string fullname, string username);
+    Task<User> UpdateUserPassword(string oldPassword,string newPassword, string username);
     Task<ClaimsIdentity> LoginCookie(string username, string password);
     Task DeleteUser(int id);
 }
@@ -76,7 +78,7 @@ public class UserServices : IUserServices
         await _logService.Create($"User {username} successfully logged in", Importance.Low);
         return JwtTokenProvider.CreateToken(secureKey, 120, username);
     }
-    
+
     public async Task<ClaimsIdentity> LoginCookie(string username, string password)
     {
         var genericLoginFail = "Incorrect username or password";
@@ -122,7 +124,44 @@ public class UserServices : IUserServices
         await _logService.Create("User fetched successfully", Importance.Low);
         return user;
     }
+    
+    public async Task<User> UpdateUserFullName(string fullname, string username)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Username == username);
+        if (user == null)
+        {
+            await _logService.Create($"Failed to update user {username}, because there is none with the same username", Importance.Low);
+            throw new NotFoundException("User not found");
+        }
+        user.FullName = fullname;
+        
+        await _context.SaveChangesAsync();
+        await _logService.Create($"User {username} successfully updated", Importance.Medium);
+        return user;
+    }
+    
+    public async Task<User> UpdateUserPassword(string oldPassword, string newPassword, string username)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+        if (user == null)
+        {
+            await _logService.Create($"Failed to update password for user {username}, because there is none with the same username", Importance.Low);
+            throw new NotFoundException("User not found");
+        }
 
+        var oldPasswordHash = PasswordHashProvider.GetHash(oldPassword);
+        if (oldPasswordHash != user.PasswordHash)
+        {
+            await _logService.Create($"Failed to update password for user {username}, because the old password is incorrect", Importance.Medium);
+            throw new Exception("Failed to update password");
+        }
+
+        user.PasswordHash = PasswordHashProvider.GetHash(newPassword);
+        await _context.SaveChangesAsync();
+        await _logService.Create($"Password for user {username} successfully updated", Importance.Medium);
+        return user;
+    }
+    
     public async Task<User> UpdateUser(UserDto userDto, string username)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);

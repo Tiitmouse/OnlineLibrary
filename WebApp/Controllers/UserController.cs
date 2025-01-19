@@ -82,13 +82,31 @@ public class UserController : Controller
     }
     
     [HttpPost]
-    public async Task<IActionResult> EditUser(UserDetailsViewModel model)
+    public async Task<IActionResult> EditUserFullName(UserDetailsViewModel model)
     {
         if (ModelState.IsValid)
         {
-            var userDto = _mapper.Map<UserDto>(model);
-            var username = User.Identity.Name; // Assuming the username is stored in the identity
-            await _userServices.UpdateUser(userDto, username);
+            var username = model.Username; // Assuming the username is stored in the identity
+            await _userServices.UpdateUserFullName(model.FullName, username);
+
+            return Json(new { success = true });
+        }
+
+        // Return validation errors
+        var errors = ModelState.ToDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+        );
+
+        return Json(new { success = false, errors });
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> EditUserPassword(string oldp, string newp, string username) 
+    {
+        if (ModelState.IsValid)
+        { 
+            await _userServices.UpdateUserPassword(oldp, newp, username);
 
             return Json(new { success = true });
         }

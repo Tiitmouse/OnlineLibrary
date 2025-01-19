@@ -4,33 +4,45 @@
 
 <h2>Profile</h2>
 
-<form id="editUserForm" method="post" class="form-horizontal" autocomplete="off">
+<form id="editUserFullNameForm" method="post" class="form-horizontal">
     <input type="hidden" asp-for="IdUser" />
     <div class="form-group row">
-        <label asp-for="Username" class="col-sm-2 col-form-label">Username</label>
+        <label asp-for="Username" class="col-sm-2 col-form-label" >Username</label> 
         <div class="col-sm-10">
-            <input asp-for="Username" class="form-control" value="@Model.Username" autocomplete="off" />
+            <input asp-for="Username" class="form-control" value="@Model.Username" readonly />
             <span asp-validation-for="Username" class="text-danger"></span>
         </div>
     </div>
     <div class="form-group row">
         <label asp-for="FullName" class="col-sm-2 col-form-label">Full name</label>
-        <div class="col-sm-10">
-            <input asp-for="FullName" class="form-control" value="@Model.FullName" autocomplete="off" />
+        <div class="col-sm-8">
+            <input asp-for="FullName" class="form-control" value="@Model.FullName" />
             <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-primary">Update full name</button>
+        </div>
+    </div>
+</form>
+
+<form id="editUserPasswordForm" method="post" class="form-horizontal" style="margin-top: 20px">
+    <div class="form-group row">
+        <label for="oldPassword" class="col-sm-2 col-form-label">Old Password</label>
+        <div class="col-sm-10">
+            <input id="oldPassword" name="oldPassword" type="password" class="form-control" />
+            <span  class="text-danger"></span>
         </div>
     </div>
     <div class="form-group row">
-        <label asp-for="PasswordHash" class="col-sm-2 col-form-label">Password</label>
+        <label for="newPassword" class="col-sm-2 col-form-label">New Password</label>
         <div class="col-sm-10">
-            <input asp-for="PasswordHash" type="password" class="form-control" autocomplete="off" />
-            <span asp-validation-for="PasswordHash" class="text-danger"></span>
+            <input id="newPassword" name="newPassword" type="password" class="form-control" />
+            <span  class="text-danger"></span>
         </div>
     </div>
     <div class="form-group row" style="margin-top: 20px">
         <div class="col-sm-10 offset-sm-2">
-            <button type="submit" class="btn btn-primary">Update</button>
-            <a href="@Url.Action("Details", "User", new { username = Model.Username })" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Update Password</button>
         </div>
     </div>
 </form>
@@ -39,16 +51,16 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         $(document).ready(function () {
-            $('#editUserForm').submit(function (event) {
+            $('#editUserFullNameForm').submit(function (event) {
                 event.preventDefault();
                 var formData = $(this).serialize();
                 $.ajax({
                     type: 'POST',
-                    url: '@Url.Action("EditUser", "User")',
+                    url: '@Url.Action("EditUserFullName", "User")',
                     data: formData,
                     success: function (response) {
                         if (response.success) {
-                            alert('User updated successfully');
+                            alert('Full name updated successfully');
                             window.location.href = '@Url.Action("Details", "User", new { username = Model.Username })';
                         } else {
                             var errors = response.errors;
@@ -62,7 +74,35 @@
                         }
                     },
                     error: function () {
-                        alert('An error occurred while updating the user.');
+                        alert('An error occurred while updating the full name.');
+                    }
+                });
+            });
+
+            $('#editUserPasswordForm').submit(function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("EditUserPassword", "User")',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Password updated successfully');
+                            window.location.href = '@Url.Action("Details", "User", new { username = Model.Username })';
+                        } else {
+                            var errors = response.errors;
+                            for (var key in errors) {
+                                if (errors.hasOwnProperty(key)) {
+                                    var errorMessages = errors[key];
+                                    var errorElement = $('[data-valmsg-for="' + key + '"]');
+                                    errorElement.html(errorMessages.join('<br/>'));
+                                }
+                            }
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while updating the password.');
                     }
                 });
             });

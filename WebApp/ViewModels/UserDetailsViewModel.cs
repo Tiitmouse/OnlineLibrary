@@ -6,6 +6,6 @@ public class UserDetailsViewModel
 
     public string Username { get; set; } = null!;
 
-    public string PasswordHash { get; set; } = null!;
+    public string Password { get; set; } 
     public string? FullName { get; set; }
 }
