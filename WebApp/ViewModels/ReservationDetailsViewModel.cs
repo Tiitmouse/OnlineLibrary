@@ -7,6 +7,8 @@ public class ReservationDetailsViewModel
     public string CosumerName { get; set; }
     public int BookLocationId { get; set; }
     public string BookTitle { get; set; }
+    
+    public int LocationId { get; set; }
     public DateTime? ReservationDate { get; set; }
     public bool? Status { get; set; }
 }

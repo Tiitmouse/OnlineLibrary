@@ -71,6 +71,7 @@ public class LocationController : Controller
     {
         var reservations = await _locationService.GetReservationsByLocation(locationId);
         var reservationDetails = _mapper.Map<List<ReservationDetailsViewModel>>(reservations);
+        ViewData["LocationId"] = locationId;
 
         return View("Details", reservationDetails);
     }

@@ -37,10 +37,11 @@ public class ReservationController : Controller
     }
     
     [HttpPost]
+    [HttpPost]
     public async Task<IActionResult> CancelReservation(int reservationId, int locationId)
     {
         await _reservationService.Cancel(reservationId);
-    
+
         TempData["Message"] = "The reservation has been canceled.";
         return RedirectToAction("Details", "Location", new { locationId = locationId });
     }

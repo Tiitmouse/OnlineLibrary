@@ -4,66 +4,73 @@
 
 <h1>Reservations</h1>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Book Title</th>
-        <th>Reservation Date</th>
-        <th>Customer Name</th>
-        <th>Status</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
+@if (!Model.Any())
+{
+    <p>There are no reservations made for this library yet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Book Title</th>
+            <th>Reservation Date</th>
+            <th>Customer Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var reservation in Model)
+        {
+            <tr>
+                <td>@reservation.IdReservation</td>
+                <td>@reservation.BookTitle</td>
+                <td>@reservation.ReservationDate?.ToString("yyyy-MM-dd")</td>
+                <td>@reservation.CosumerName</td>
+                <td class="@(reservation.Status.Value ? "text-success" : "text-warning")">
+                    <span style="color: @(reservation.Status.Value ? "#28a745" : "#fd7e14")">
+                        <strong>@(reservation.Status.Value ? "Picked up" : "Waiting for pickup")</strong>
+                    </span>
+                </td>
+                <td>
+                    <form id="deleteForm-@reservation.IdReservation" action="@Url.Action("CancelReservation", "Reservation", new {locationId = reservation.LocationId} )" method="post">
+                        <input type="hidden" name="reservationId" value="@reservation.IdReservation"/>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal-@reservation.IdReservation">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
     @foreach (var reservation in Model)
     {
-        <tr>
-            <td>@reservation.IdReservation</td>
-            <td>@reservation.BookTitle</td>
-            <td>@reservation.ReservationDate?.ToString("yyyy-MM-dd")</td>
-            <td>@reservation.CosumerName</td>
-            <td class="@(reservation.Status.Value ? "text-success" : "text-warning")">
-                <span style="color: @(reservation.Status.Value ? "#28a745" : "#fd7e14")">
-                    <strong>@(reservation.Status.Value ? "Picked up" : "Waiting for pickup")</strong>
-                </span>
-            </td>
-            <td>
-                <form id="deleteForm-@reservation.IdReservation" action="@Url.Action("CancelReservation", "Reservation")" method="post">
-                    <input type="hidden" name="reservationId" value="@reservation.IdReservation"/>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal-@reservation.IdReservation">Delete</button>
-                </form>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-
-@foreach (var reservation in Model)
-{
-    <div class="modal fade" id="confirmModal-@reservation.IdReservation" tabindex="-1" aria-labelledby="confirmModalLabel-@reservation.IdReservation" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalLabel-@reservation.IdReservation">Confirm Deletion</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this reservation?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" onclick="document.getElementById('deleteForm-@reservation.IdReservation').submit();">Confirm</button>
+        <div class="modal fade" id="confirmModal-@reservation.IdReservation" tabindex="-1" aria-labelledby="confirmModalLabel-@reservation.IdReservation" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel-@reservation.IdReservation">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this reservation?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" onclick="document.getElementById('deleteForm-@reservation.IdReservation').submit();">Confirm</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 }
 
 @section Scripts {
     <script>
-            document.getElementById('confirmDeleteButton').addEventListener('click', function () {
-                document.getElementById('deleteForm').submit();
-            });
-        </script>
+        document.getElementById('confirmDeleteButton').addEventListener('click', function () {
+            document.getElementById('deleteForm').submit();
+        });
+    </script>
 }
