@@ -90,9 +90,9 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditUserPassword(string oldp, string newp, string username)
+    public async Task<IActionResult> EditUserPassword(string oldPassword, string newPassword, string username)
     {
-        await _userServices.UpdateUserPassword(oldp, newp, username);
+        await _userServices.UpdateUserPassword(oldPassword, newPassword, username);
         return Json(new { success = true });
     }
 }
