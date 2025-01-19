@@ -52,6 +52,9 @@ public class MapperProfile : Profile
             .ForMember(dest => dest.LocationId, opt => opt.MapFrom(src => src.BookLocation.LocationId))
             .ForMember(dest => dest.ReservationDate, opt => opt.MapFrom(src => src.ReservationDate))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+        
+        CreateMap<User, UserDetailsViewModel>();
+        CreateMap<UserDetailsViewModel, User>();
 
 
     }

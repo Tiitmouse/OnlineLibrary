@@ -43,7 +43,7 @@
                                 <a class="nav-link text-dark" href="@Url.ActionLink("List","Location")">Locations</a>
                             </li>
                             <li class="nav-item ms-auto">
-                                <span class="nav-link text-dark">@User.Identity.Name</span>
+                                <a class="nav-link text-dark" href="@Url.ActionLink("Details","User", new {username = @User.Identity.Name})">@User.Identity.Name</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" href="@Url.ActionLink("Logout", "User")">Logout</a>
@@ -57,14 +57,8 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" href="@Url.ActionLink("List","Book")">Books</a>
                             </li>
-                            <li class="nav-item">
-                                <p>nije admin</p>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
                             <li class="nav-item ms-auto">
-                                <span class="nav-link text-dark">@User.Identity.Name</span>
+                                <a class="nav-link text-dark" href="@Url.ActionLink("Details","User", new {username = @User.Identity.Name})">@User.Identity.Name</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" href="@Url.ActionLink("Logout", "User")">Logout</a>
