@@ -17,11 +17,11 @@
     <div class="form-group row">
         <label asp-for="FullName" class="col-sm-2 col-form-label">Full name</label>
         <div class="col-sm-8">
-            <input asp-for="FullName" class="form-control" value="@Model.FullName"/>
+            <input asp-for="FullName" class="form-control" value="@Model.FullName" />
             <span asp-validation-for="FullName" class="text-danger"></span>
         </div>
         <div class="col-sm-2">
-            <button type="submit" class="btn btn-primary">Update full name</button>
+            <button type="submit" class="btn btn-primary" >Update</button>
         </div>
     </div>
 </form>
@@ -69,6 +69,8 @@
         </div>
     </div>
 </div>
+
+<!-- TODO add cofirm container styling to everything  -->
 
 <!-- Confirmation Modal for Password Update -->
 <div class="modal fade" id="confirmModalPassword" tabindex="-1" aria-labelledby="confirmModalLabelPassword" aria-hidden="true">
