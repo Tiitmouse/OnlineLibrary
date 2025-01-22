@@ -1,6 +1,7 @@
 body{
   background-color: #edf1f5;
   margin-top:20px;
+  margin-bottom: 60px;
 }
 /*TODO in books list add white bg as to the card in details.css*/
 
@@ -21,8 +22,4 @@ html {
 html {
   position: relative;
   min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
 }
