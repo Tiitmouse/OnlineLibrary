@@ -6,6 +6,10 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: #000 !important;
 }
 
+.usrname {
+    background-color: #EDF1F5;
+    border-width: 0;
+}
 
 .form-horizontal {
     position: relative;
@@ -13,11 +17,11 @@ input:-webkit-autofill:active {
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
-    background-color: #fff;
     background-clip: border-box;
     border: 0 solid transparent;
     border-radius: 0.3rem;
     padding: 30px;
+    background-color: #EDF1F5;
 }
 
 .form-group {
