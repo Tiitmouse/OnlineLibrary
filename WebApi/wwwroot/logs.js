@@ -15,8 +15,12 @@ $(document).ready(function() {
                 updatePagination(page, perPage);
             },
             error: function(xhr, status, error) {
-                //TODO: 401 redirect to login
-                console.error('Failed to fetch logs:', error);
+                debugger;
+                if (xhr.status === 401) {
+                    window.location.href = 'index.html';
+                    return
+                }
+                alert('Failed to fetch logs');
             }
         });
     }
