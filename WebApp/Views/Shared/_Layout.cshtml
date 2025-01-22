@@ -77,7 +77,15 @@
                 </ul>
             </div>
         </div>
-    </nav>
+    </nav>  
+    
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="logoutCatImg">
+            <img src="/materials/logoutCat.png" alt="(=^･ω･^=)" class="img-fluid">
+        </div>
+    }
+
 </header>
 <div class="container">
     <main role="main" class="pb-3">

@@ -23,3 +23,9 @@ html {
   position: relative;
   min-height: 100%;
 }
+
+.logoutCatImg {
+  margin-left: 95vw;
+  margin-top: -14.5vh;
+  scale: 1.5;
+}
