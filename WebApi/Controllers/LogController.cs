@@ -19,7 +19,7 @@ public class LogController  : ControllerBase
         _logService = logService;
         _mapper = mapper;
     }
-    
+    //TODO: mby rename
     [HttpGet("[action]")]
     public async Task<IActionResult> FetchLogs([FromQuery] int n, int page)
     {
@@ -27,4 +27,10 @@ public class LogController  : ControllerBase
         var logDtos = _mapper.Map<List<LogDto>>(logs);
         return Ok(logDtos);
     }
+    
+    //TODO: Create route /get/N where N is number of logs to fetch default n is 10
+    
+    //TODO: Create route /count which returns number of logs in database
+    
+    
 }

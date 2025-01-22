@@ -5,6 +5,7 @@ using Data.Models;
 using Data.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 
@@ -60,7 +61,7 @@ public class UserController : Controller
         try
         {
             await _userServices.Register(user, password);
-            return Ok("User registered");
+            return RedirectToAction("Login", "User");
         }
         catch (Exception ex)
         {
@@ -73,7 +74,8 @@ public class UserController : Controller
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Index", "Home");
     }
-
+    
+    [Authorize]
     public async Task<IActionResult> Details(string username)
     {
         var user = await _userServices.GetUser(username);

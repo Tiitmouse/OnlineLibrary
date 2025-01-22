@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
-
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
@@ -20,7 +19,7 @@ public class UserController : ControllerBase
         _userServices = userServices;
         _mapper = mapper;
     }
-    
+    //TODO: separate register and login and changepassword to auth controller  don't forget to change it in the frontend js :)
     [HttpPost("[action]")]
     public async Task<ActionResult<UserDto>> Register([FromBody]UserDto userDto)
     {
@@ -35,6 +34,7 @@ public class UserController : ControllerBase
         var token = await _userServices.Login(userDto.Username, userDto.Password);
         return Ok(token); 
     }
+    //TODO: make endpoint changepassword
     
     [Authorize]
     [HttpGet("[action]")]

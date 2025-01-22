@@ -53,5 +53,5 @@ public class BookController : ControllerBase
         var bookDtos = _mapper.Map<List<BookDto>>(books);
         return Ok(bookDtos);
     }
-    
+    //TODO: make endpoint /search with query parametars (name, count and page) which returns n books from page page
 }
