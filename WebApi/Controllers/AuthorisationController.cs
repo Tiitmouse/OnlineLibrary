@@ -34,6 +34,11 @@ public class AuthorisationController : ControllerBase
         var token = await _userServices.Login(userDto.Username, userDto.Password);
         return Ok(token); 
     }
-
-    //TODO: make endpoint changepassword
+    [Authorize]
+    [HttpPost("[action]")]
+    public async Task<ActionResult> ChangePassword(string oldPassword, string newPassword, string username)
+    {
+        await _userServices.UpdateUserPassword(oldPassword, newPassword, username);
+        return Ok();
+    }ß
 }
