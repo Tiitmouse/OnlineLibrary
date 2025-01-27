@@ -54,12 +54,11 @@ public class BookController : ControllerBase
         return Ok(bookDtos);
     }
     [HttpGet("[action]")]
-    public async Task<IActionResult> Search(string seachTerm, int n, int page)
+    public async Task<IActionResult> Search([FromQuery]string seachTerm, [FromQuery]int n, [FromQuery]int page)
     {
         var books = await _bookService.SearchAndPaginate(seachTerm, n, page);
         var bookDtos = _mapper.Map<List<BookDto>>(books);
         return Ok(bookDtos);
     }
     
-    //TODO: make endpoint /search with query parametars (name, count and page) which returns n books from page page
 }
