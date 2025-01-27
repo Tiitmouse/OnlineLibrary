@@ -40,5 +40,5 @@ public class AuthorisationController : ControllerBase
     {
         await _userServices.UpdateUserPassword(oldPassword, newPassword, username);
         return Ok();
-    }ß
+    }
 }
