@@ -19,22 +19,6 @@ public class UserController : ControllerBase
         _userServices = userServices;
         _mapper = mapper;
     }
-    //TODO: separate register and login and changepassword to auth controller  don't forget to change it in the frontend js :)
-    [HttpPost("[action]")]
-    public async Task<ActionResult<UserDto>> Register([FromBody]UserDto userDto)
-    {
-        var user = _mapper.Map<User>(userDto);
-        await _userServices.Register(user, userDto.Password);
-        return Ok();
-    }
-    
-    [HttpPost("[action]")]
-    public async Task<ActionResult> Login([FromBody]UserLoginDto userDto)
-    {
-        var token = await _userServices.Login(userDto.Username, userDto.Password);
-        return Ok(token); 
-    }
-    //TODO: make endpoint changepassword
     
     [Authorize]
     [HttpGet("[action]")]

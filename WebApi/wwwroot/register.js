@@ -15,7 +15,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '/api/User/Register',
+            url: '/api/Authorisation/Register',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(user),
