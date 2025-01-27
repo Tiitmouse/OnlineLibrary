@@ -15,8 +15,7 @@ public interface IBookService
     public Task Update(int id, Book book);
     public Task Create(Book newBook);
     public Task<List<Book>> GetAll();
-    
-
+    public Task<List<Book>> SearchAndPaginate(string seachTerm, int n, int page);
 }
 
 public class BookServices : IBookService
@@ -131,5 +130,20 @@ public class BookServices : IBookService
             .Include(b => b.Author)
             .ToListAsync();
     }
-    
+
+    public async Task<List<Book>> SearchAndPaginate(string seachTerm, int n, int page)
+    {
+        return await _context.Books
+            .AsNoTracking()
+            .Include(b => b.Genre)
+            .Include(b => b.BookLocations)
+            .Include(b => b.Author)
+            .Where(b => string.IsNullOrEmpty(seachTerm) || 
+                        b.Title.ToLower().Contains(seachTerm) ||
+                        (b.Author != null && b.Author.AuthorName.ToLower().Contains(seachTerm)) ||
+                        (b.Genre != null && b.Genre.GenreName.ToLower().Contains(seachTerm)))
+            .Skip(n * (page - 1))
+            .Take(n)
+            .ToListAsync();
+    }
 }

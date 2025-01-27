@@ -45,7 +45,7 @@ public class BookController : ControllerBase
     {
         await _bookService.Update(id, book);
         return Ok($"book {id} edited");
-    } 
+    }
     [HttpGet("[action]")]
     public async Task<IActionResult> FetchBooks()
     {
@@ -53,5 +53,13 @@ public class BookController : ControllerBase
         var bookDtos = _mapper.Map<List<BookDto>>(books);
         return Ok(bookDtos);
     }
+    [HttpGet("[action]")]
+    public async Task<IActionResult> Search(string seachTerm, int n, int page)
+    {
+        var books = await _bookService.SearchAndPaginate(seachTerm, n, page);
+        var bookDtos = _mapper.Map<List<BookDto>>(books);
+        return Ok(bookDtos);
+    }
+    
     //TODO: make endpoint /search with query parametars (name, count and page) which returns n books from page page
 }
