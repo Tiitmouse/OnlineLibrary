@@ -21,14 +21,19 @@ public class LogController  : ControllerBase
     }
     //TODO: mby rename
     [HttpGet("[action]")]
-    public async Task<IActionResult> FetchLogs([FromQuery] int n, int page)
+    public async Task<IActionResult> FetchLogs([FromQuery] int n, [FromQuery]int page)
     {
         var logs = await _logService.GetPaginated(n, page);
         var logDtos = _mapper.Map<List<LogDto>>(logs);
         return Ok(logDtos);
     }
-    
-    //TODO: Create route /get/N where N is number of logs to fetch default n is 10
+    [HttpGet("get/{n}")]
+    public async Task<IActionResult> GetNLogs([FromRoute] int n=10)
+    {
+        var logs = await _logService.GetPaginated(n, 1);
+        var logDtos = _mapper.Map<List<LogDto>>(logs);
+        return Ok(logDtos);
+    }
     
     [HttpGet("[action]")]
     public async Task<int> Count()
