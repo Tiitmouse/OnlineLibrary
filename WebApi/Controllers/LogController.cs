@@ -30,7 +30,9 @@ public class LogController  : ControllerBase
     
     //TODO: Create route /get/N where N is number of logs to fetch default n is 10
     
-    //TODO: Create route /count which returns number of logs in database
-    
-    
+    [HttpGet("[action]")]
+    public async Task<int> Count()
+    {
+        return await _logService.CountLogs();
+    }
 }

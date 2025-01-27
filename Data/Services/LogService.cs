@@ -7,7 +7,8 @@ namespace Data.Services;
 public interface ILogService
 {
     public Task Create(string message, Importance importance = Importance.None);
-    public Task<List<Log>> GetPaginated(int n, int page);   
+    public Task<List<Log>> GetPaginated(int n, int page);  
+    public Task<int> CountLogs();
 }
 
 public class LogService : ILogService
@@ -38,5 +39,10 @@ public class LogService : ILogService
             .Skip(n * (page-1))
             .Take(n)
             .ToListAsync();
+    }
+
+    public async Task<int> CountLogs()
+    {
+        return await _context.Logs.CountAsync();
     }
 }
