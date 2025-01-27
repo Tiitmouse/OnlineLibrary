@@ -25,6 +25,28 @@ $(document).ready(function() {
         });
     }
 
+    function fetchLogCount() {
+        const token = localStorage.getItem('jwtToken');
+        $.ajax({
+            url: `/api/Log/Count`,
+            type: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            success: function(count) {
+                $('#logsCount').text(`Total Logs: ${count}`);
+            },
+            error: function(xhr, status, error) {
+                debugger;
+                if (xhr.status === 401) {
+                    window.location.href = 'index.html';
+                    return
+                }
+                alert('Failed to fetch log count');
+            }
+        });
+    }
+
     function updateTable(logs) {
         const tbody = $('#logsTableBody');
         tbody.empty();
@@ -58,6 +80,7 @@ $(document).ready(function() {
 
     $('#refreshLogs').click(function() {
         fetchLogs(currentPage, logsPerPage);
+        fetchLogCount();
     });
 
     $('#logout').click(function() {
@@ -78,4 +101,5 @@ $(document).ready(function() {
     });
 
     fetchLogs(currentPage, logsPerPage);
+    fetchLogCount();
 });
