@@ -39,7 +39,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         // TODO implement those pages 
         options.LoginPath = "/User/Login";
         options.LogoutPath = "/User/Logout";
-        options.AccessDeniedPath = "/Shared/Unauthorised";
+        options.AccessDeniedPath = "/Home/Unauthorized";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
         options.SlidingExpiration = true;
 

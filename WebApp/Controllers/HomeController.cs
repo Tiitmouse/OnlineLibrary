@@ -18,7 +18,7 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Unauthorised()
+    public IActionResult Unauthorized()
     {
         return View();
     }
