@@ -5,6 +5,10 @@ body{
 }
 /*TODO in books list add white bg as to the card in details.css*/
 
+.navHeader{
+  margin-bottom: 80px;
+}
+
 html {
   font-size: 14px;
 }
