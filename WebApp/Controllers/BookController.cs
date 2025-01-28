@@ -28,7 +28,7 @@ public class BookController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> List(string searchString)
+    public async Task<IActionResult> List(string searchString, int pageNumber = 1, int pageSize = 10)
     {
         List<Book> books = await _bookService.GetAll();
         if (!string.IsNullOrEmpty(searchString))
@@ -40,8 +40,15 @@ public class BookController : Controller
                 .ToList();
         }
 
+        int totalBooks = books.Count;
+        books = books.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
         List<BookViewModel> bookViewModels = _mapper.Map<List<BookViewModel>>(books);
         ViewData["CurrentFilter"] = searchString;
+        ViewData["PageNumber"] = pageNumber;
+        ViewData["PageSize"] = pageSize;
+        ViewData["TotalBooks"] = totalBooks;
+
         return View(bookViewModels);
     }
 

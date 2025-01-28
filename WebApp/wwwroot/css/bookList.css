@@ -1,0 +1,15 @@
+.pagination-controls{
+    display: flex;
+    justify-content: flex-end;
+}
+#pageInfo{
+    -webkit-text-stroke-width: medium;
+}
+.navArrow{
+    -webkit-text-stroke-width: medium;
+}
+.pagination-item{
+    margin: 0 5px;
+    padding: 5px;
+
+}

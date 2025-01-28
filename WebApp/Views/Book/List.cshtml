@@ -1,8 +1,10 @@
 @model List<BookViewModel>
 
+<link href="/css/bookList.css" rel="stylesheet">
+
 <h1>Books</h1>
 
-<form method="get" asp-action="List">
+<form method="get" asp-action="List" id="searchForm">
     <div class="input-group mb-3">
         <input type="text" name="searchString" class="form-control" id="searchInput" placeholder="Search by title..." value="@ViewData["CurrentFilter"]" />
         <div class="input-group-append">
@@ -10,6 +12,18 @@
         </div>
     </div>
 </form>
+
+<div class="pagination-controls">
+    <label class="pagination-item" for="pageSizeSelect">Books per page:</label>
+    <select id="pageSizeSelect" class="form-control pagination-item" style="width: auto; display: inline-block;">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+    </select>
+    <button id="prevPage" class="btn btn-secondary navArrow pagination-item">&#10094;</button>
+    <span id="pageInfo" class="pagination-item"></span>
+    <button id="nextPage" class="btn btn-secondary navArrow pagination-item">&#10095;</button>
+</div>
 
 <form method="post" asp-action="DeleteSelectedBooks">
     <table class="table">
@@ -25,7 +39,7 @@
             <th scope="col"></th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="bookTableBody">
         @foreach (var book in Model)
         {
             <tr>
@@ -37,7 +51,7 @@
                 <td>@book.Isbn</td>
                 <td>@book.PublicationYear</td>
                 <td>
-                    <a href="@Url.Action("Details", "Book", new {id = @book.IdBook})" class="btn btn-outline-dark">See Details</a>  
+                    <a href="@Url.Action("Details", "Book", new {id = @book.IdBook})" class="btn btn-outline-dark">See Details</a>
                 </td>
             </tr>
         }
@@ -45,8 +59,6 @@
     </table>
     <button type="submit" class="btn btn-danger">Delete Selected Books</button>
 </form>
-
-
 
 @section Scripts {
     <script>
@@ -58,5 +70,61 @@
             searchInput.placeholder = placeholders[index];
             index = (index + 1) % placeholders.length;
         }, 2000);
+
+        $(document).ready(function() {
+            let currentPage = 1;
+            let booksPerPage = 10;
+
+            function fetchBooks(page, perPage) {
+                const searchString = $('#searchInput').val();
+                $.ajax({
+                    url: '/Book/List',
+                    type: 'GET',
+                    data: {
+                        searchString: searchString,
+                        pageNumber: page,
+                        pageSize: perPage
+                    },
+                    success: function(data) {
+                        $('#bookTableBody').html($(data).find('#bookTableBody').html());
+                        updatePagination(page, perPage);
+                    },
+                    error: function() {
+                        alert('Failed to fetch books');
+                    }
+                });
+            }
+
+            function updatePagination(page, perPage) {
+                $('#pageInfo').text(`${page}`);
+                $('#prevPage').prop('disabled', page === 1);
+                $('#nextPage').prop('disabled', $('#bookTableBody tr').length < perPage);
+            }
+
+            $('#pageSizeSelect').change(function() {
+                booksPerPage = $(this).val();
+                currentPage = 1;
+                fetchBooks(currentPage, booksPerPage);
+            });
+
+            $('#searchForm').submit(function(e) {
+                e.preventDefault();
+                fetchBooks(1, booksPerPage);
+            });
+
+            $('#prevPage').click(function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    fetchBooks(currentPage, booksPerPage);
+                }
+            });
+
+            $('#nextPage').click(function() {
+                currentPage++;
+                fetchBooks(currentPage, booksPerPage);
+            });
+
+            fetchBooks(currentPage, booksPerPage);
+        });
     </script>
 }
