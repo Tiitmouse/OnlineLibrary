@@ -10,13 +10,15 @@ public class GenreController  : Controller
 {
     private readonly IGenreService _genreService;
     private readonly IBookService _bookService;
+    private readonly ILocationService _locationService;
     private readonly IMapper _mapper;
 
-    public GenreController(IGenreService genreService, IMapper mapper, IBookService bookService)
+    public GenreController(IGenreService genreService, IMapper mapper, IBookService bookService, ILocationService locationService)
     {
         _genreService = genreService;
         _mapper = mapper;
         _bookService = bookService;
+        _locationService = locationService;
     }
     
     [HttpGet]
@@ -38,11 +40,19 @@ public class GenreController  : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteSelectedGenres(List<int> genreIds)
     {
-        foreach (var authorId in genreIds)
+        foreach (var genreId in genreIds)
         {
-            await _bookService.DeleteByAuthorId(authorId);
-            await _genreService.Delete(authorId);
+            var books = await _bookService.GetByGenreId(genreId);
+            var bookids = books.Select(b => b.IdBook).ToList();
+            await _locationService.RemoveEntryByBookIds(bookids);
+            await _bookService.DeleteByGenreId(genreId);
+            await _genreService.Delete(genreId);
         }
+
+        if (genreIds.Count == 1)
+        {
+            TempData["Message"] = "The genre has been deleted.";
+        } TempData["Message"] = "The genres have been deleted.";
         return RedirectToAction("List");
     }
     

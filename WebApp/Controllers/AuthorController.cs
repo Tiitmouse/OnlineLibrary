@@ -40,7 +40,6 @@ public class AuthorController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteSelectedAuthors(List<int> authorIds)
     {
-
         foreach (var authorId in authorIds)
         {
             var books = await _bookService.GetByAuthorId(authorId);
@@ -48,9 +47,7 @@ public class AuthorController : Controller
             await _locationsService.RemoveEntryByBookIds(bookids);
             await _bookService.DeleteByAuthorId(authorId);
             await _authorService.Delete(authorId);
-
         }
-
         if (authorIds.Count == 1)
         {
             TempData["Message"] = "The author has been deleted.";

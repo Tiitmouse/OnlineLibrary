@@ -12,6 +12,7 @@ public interface IBookService
     public Task Delete(int id);
     public Task DeleteByAuthorId(int authorId);
     public Task<List<Book>> GetByAuthorId(int authorId);
+    public Task<List<Book>> GetByGenreId(int genreId);
     public Task DeleteByGenreId(int genreId);
     public Task Update(int id, Book book);
     public Task Create(Book newBook);
@@ -79,9 +80,19 @@ public class BookServices : IBookService
         if (books == null || !books.Any())
         {
             await _logService.Create($"No books found for author with ID {authorId}", Importance.Low);
-            throw new NotFoundException($"Books with author id {authorId} not found");
         }
         await _logService.Create($"Books with author ID {authorId} fetched successfully", Importance.Low);
+        return books;
+    }
+
+    public async Task<List<Book>> GetByGenreId(int genreId)
+    {
+        var books = await _context.Books.Where(b => b.GenreId == genreId).ToListAsync();
+        if (books == null || !books.Any())
+        {
+            await _logService.Create($"No books found for genre with ID {genreId}", Importance.Low);
+        }
+        await _logService.Create($"Books with genre ID {genreId} fetched successfully", Importance.Low);
         return books;
     }
 
