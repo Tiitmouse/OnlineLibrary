@@ -11,11 +11,13 @@ public interface IBookService
     public Task<Book> Get(int id);
     public Task Delete(int id);
     public Task DeleteByAuthorId(int authorId);
+    public Task<List<Book>> GetByAuthorId(int authorId);
     public Task DeleteByGenreId(int genreId);
     public Task Update(int id, Book book);
     public Task Create(Book newBook);
     public Task<List<Book>> GetAll();
     public Task<List<Book>> SearchAndPaginate(string seachTerm, int n, int page);
+    public Task DeleteMultiple(List<Book> books);
 }
 
 public class BookServices : IBookService
@@ -42,7 +44,7 @@ public class BookServices : IBookService
             await _logService.Create("Failed to fetch book with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Book with id {id} not found");
         }
-        await _logService.Create("Book with ID {id} fetched successdully", Importance.Low);
+        await _logService.Create("Book with ID {id} fetched successfully", Importance.Low);
         return book;
     }
 
@@ -68,8 +70,19 @@ public class BookServices : IBookService
             return;
         }
         _context.Books.RemoveRange(books);
-        await _logService.Create($"All books for author with ID {authorId} successfully deleted", Importance.High);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<Book>> GetByAuthorId(int authorId)
+    {
+        var books = await _context.Books.Where(b => b.AuthorId == authorId).ToListAsync();
+        if (books == null || !books.Any())
+        {
+            await _logService.Create($"No books found for author with ID {authorId}", Importance.Low);
+            throw new NotFoundException($"Books with author id {authorId} not found");
+        }
+        await _logService.Create($"Books with author ID {authorId} fetched successfully", Importance.Low);
+        return books;
     }
 
     public async Task DeleteByGenreId(int genreId)
@@ -145,5 +158,11 @@ public class BookServices : IBookService
             .Skip(n * (page - 1))
             .Take(n)
             .ToListAsync();
+    }
+
+    public async Task DeleteMultiple(List<Book> books)
+    {
+        _context.Books.RemoveRange(books);
+        await _context.SaveChangesAsync();
     }
 }

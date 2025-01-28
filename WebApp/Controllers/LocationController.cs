@@ -1,4 +1,5 @@
 using AutoMapper;
+using Data.Exceptions;
 using Data.Models;
 using Data.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -75,5 +76,4 @@ public class LocationController : Controller
 
         return View("Details", reservationDetails);
     }
-
 }

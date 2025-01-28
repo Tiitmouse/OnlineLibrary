@@ -14,8 +14,8 @@ public interface ILocationService
     public Task Update(int id, Location location);
     public Task Create(Location newLocation);
     public Task<List<Location>> GetAll();
-    Task<List<Reservation>> GetReservationsByLocation(int locationId); // New method
-
+    public Task<List<Reservation>> GetReservationsByLocation(int locationId);
+    public Task RemoveEntryByBookIds(List<int> bookIds);
 }
 
 public class LocationServices : ILocationService
@@ -132,4 +132,11 @@ public class LocationServices : ILocationService
             .Where(r => r.BookLocation.LocationId == locationId)
             .ToListAsync();
     }
+
+    public async Task RemoveEntryByBookIds(List<int> bookIds)
+    {
+        _context.BookLocations.RemoveRange(_context.BookLocations.Where(bl => bookIds.Contains(bl.BookId)));
+        await _context.SaveChangesAsync();
+    }
+
 }

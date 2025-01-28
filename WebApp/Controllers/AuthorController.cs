@@ -10,13 +10,15 @@ public class AuthorController : Controller
 {
     private readonly IAuthorService _authorService;
     private readonly IBookService _bookService;
+    private readonly ILocationService _locationsService;
     private readonly IMapper _mapper;
 
-    public AuthorController(IAuthorService authorService, IMapper mapper, IBookService bookService)
+    public AuthorController(IAuthorService authorService, IMapper mapper, IBookService bookService, ILocationService locationsService)
     {
         _authorService = authorService;
         _mapper = mapper;
         _bookService = bookService;
+        _locationsService = locationsService;
     }
     
     [HttpGet]
@@ -38,11 +40,21 @@ public class AuthorController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteSelectedAuthors(List<int> authorIds)
     {
+
         foreach (var authorId in authorIds)
         {
+            var books = await _bookService.GetByAuthorId(authorId);
+            var bookids = books.Select(b => b.IdBook).ToList();
+            await _locationsService.RemoveEntryByBookIds(bookids);
             await _bookService.DeleteByAuthorId(authorId);
             await _authorService.Delete(authorId);
+
         }
+
+        if (authorIds.Count == 1)
+        {
+            TempData["Message"] = "The author has been deleted.";
+        } TempData["Message"] = "The authors have been deleted.";
         return RedirectToAction("List");
     }
     
