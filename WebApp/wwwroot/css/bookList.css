@@ -3,7 +3,7 @@
     justify-content: flex-end;
 }
 #pageInfo{
-    -webkit-text-stroke-width: medium;
+    -webkit-text-stroke-width: thin;
 }
 .navArrow{
     -webkit-text-stroke-width: medium;
