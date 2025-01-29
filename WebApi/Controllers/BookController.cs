@@ -12,12 +12,14 @@ namespace WebApi.Controllers;
 public class BookController : ControllerBase
 {
     private readonly IBookService _bookService;
+    private readonly ILocationService _locationService;
     private readonly IMapper _mapper;
 
-    public BookController(IBookService bookService, IMapper mapper)
+    public BookController(IBookService bookService, IMapper mapper, ILocationService locationService)
     {
         _bookService = bookService;
         _mapper = mapper;
+        _locationService = locationService;
     }
 
     [HttpGet("[action]/{id}")]
@@ -37,7 +39,8 @@ public class BookController : ControllerBase
     public async Task<IActionResult> CreateBook(NewBookDto bookDto)
     {
         var newBook = _mapper.Map<Book>(bookDto);
-        await _bookService.Create(newBook);
+        int bookId = await _bookService.Create(newBook);
+        await _locationService.AddBookToLocations(bookId, bookDto.LocationsId);
         return Ok($"book with {newBook.Isbn} isbn has been added");
     } 
     [HttpPut("[action]")]
