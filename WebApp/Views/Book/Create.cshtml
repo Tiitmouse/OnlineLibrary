@@ -1,0 +1,62 @@
+@model NewBookViewModel
+
+@{
+    ViewData["Title"] = "Create Book";
+}
+
+<h1>Create Book</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" asp-controller="Book" method="post">
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PublicationYear" class="control-label"></label>
+                <input asp-for="PublicationYear" class="form-control" />
+                <span asp-validation-for="PublicationYear" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Isbn" class="control-label"></label>
+                <input asp-for="Isbn" class="form-control" />
+                <span asp-validation-for="Isbn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Author" class="control-label"></label>
+                <select asp-for="Author" class="form-control" asp-items="Model.Authors"></select>
+                <span asp-validation-for="Author" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Genre" class="control-label"></label>
+                <select asp-for="Genre" class="form-control" asp-items="Model.Genres"></select>
+                <span asp-validation-for="Genre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Locations</label>
+                @foreach (var location in Model.Locations)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="LocationIds" value="@location.Value" />
+                        <label class="form-check-label">@location.Text</label>
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-success" />
+                <a href="@Url.Action("List", "Book")" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -15,10 +15,9 @@ public interface IBookService
     public Task<List<Book>> GetByGenreId(int genreId);
     public Task DeleteByGenreId(int genreId);
     public Task Update(int id, Book book);
-    public Task Create(Book newBook);
+    public Task<int> Create(Book newBook);
     public Task<List<Book>> GetAll();
     public Task<List<Book>> SearchAndPaginate(string seachTerm, int n, int page);
-    public Task DeleteMultiple(List<Book> books);
 }
 
 public class BookServices : IBookService
@@ -130,7 +129,7 @@ public class BookServices : IBookService
         await _context.SaveChangesAsync();
     }
 
-    public async Task Create(Book newBook)
+    public async Task<int> Create(Book newBook)
     {
         Book? book = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == newBook.Isbn);
         if (book != null)
@@ -143,6 +142,7 @@ public class BookServices : IBookService
         await _logService.Create("Book with ISBN {newBook.Isbn} successfully added", Importance.High);
         await _context.SaveChangesAsync();
 
+        return newBook.IdBook;
     }
 
     public async Task<List<Book>> GetAll()
@@ -169,11 +169,5 @@ public class BookServices : IBookService
             .Skip(n * (page - 1))
             .Take(n)
             .ToListAsync();
-    }
-
-    public async Task DeleteMultiple(List<Book> books)
-    {
-        _context.Books.RemoveRange(books);
-        await _context.SaveChangesAsync();
     }
 }

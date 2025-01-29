@@ -14,6 +14,26 @@ public class MapperProfile : Profile
             .ForMember(b => b.GenreName, opt => opt.MapFrom(b => b.Genre.GenreName));
         CreateMap<BookViewModel, Book>();
 
+        CreateMap<Book, DetailsBookViewModel>()
+            .ForMember(d => d.AuthorName, opt => opt.MapFrom(b => b.Author.AuthorName))
+            .ForMember(d => d.GenreName, opt => opt.MapFrom(b => b.Genre.GenreName))
+            .ForMember(d => d.Libraries, opt => opt.MapFrom(b => b.BookLocations.Select(l => new LibraryAvailabilityViewModel
+            {
+                LocationId = l.Location.IdLocation,
+                LocationName = l.Location.LocationName,
+                LocationAddress = l.Location.Address,
+                IsAvailable = !l.Reservations.Any(r => r.BookLocation.BookId == b.IdBook),
+                BookLocationId = l.Id
+            })));
+
+        CreateMap<NewBookViewModel, Book>()
+            .ForMember(b => b.IdBook, opt => opt.Ignore())
+            .ForMember(b => b.Author, opt => opt.Ignore())
+            .ForMember(b => b.Genre, opt => opt.Ignore())
+            .ForMember(b => b.AuthorId, opt => opt.MapFrom(src => int.Parse(src.Author)))
+            .ForMember(b => b.GenreId, opt => opt.MapFrom(src => int.Parse(src.Genre)));
+        
+        
         CreateMap<Genre, GenreViewModel>();
         CreateMap<GenreViewModel, Genre>();
 
@@ -31,17 +51,7 @@ public class MapperProfile : Profile
             .ForMember(l => l.LocationAddress, opt => opt.MapFrom(l => l.Location.Address));
         CreateMap<LibraryAvailabilityViewModel, BookLocation>();
 
-        CreateMap<Book, DetailsBookViewModel>()
-            .ForMember(d => d.AuthorName, opt => opt.MapFrom(b => b.Author.AuthorName))
-            .ForMember(d => d.GenreName, opt => opt.MapFrom(b => b.Genre.GenreName))
-            .ForMember(d => d.Libraries, opt => opt.MapFrom(b => b.BookLocations.Select(l => new LibraryAvailabilityViewModel
-            {
-                LocationId = l.Location.IdLocation,
-                LocationName = l.Location.LocationName,
-                LocationAddress = l.Location.Address,
-                IsAvailable = !l.Reservations.Any(r => r.BookLocation.BookId == b.IdBook),
-                BookLocationId = l.Id
-            })));
+
 
         CreateMap<Reservation, ReservationDetailsViewModel>()
             .ForMember(dest => dest.IdReservation, opt => opt.MapFrom(src => src.IdReservation))

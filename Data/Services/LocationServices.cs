@@ -16,6 +16,7 @@ public interface ILocationService
     public Task<List<Location>> GetAll();
     public Task<List<Reservation>> GetReservationsByLocation(int locationId);
     public Task RemoveEntryByBookIds(List<int> bookIds);
+    public Task AddBookToLocations(int bookId, List<int> locationIds);
 }
 
 public class LocationServices : ILocationService
@@ -77,7 +78,6 @@ public class LocationServices : ILocationService
         if (!bookLocations.Any())
         {
             await _logService.Create($"No locations found for book with ID {bookId}", Importance.Low);
-            throw new NotFoundException($"No locations found for book with id {bookId}");
         }
 
         _context.BookLocations.RemoveRange(bookLocations);
@@ -136,6 +136,24 @@ public class LocationServices : ILocationService
     public async Task RemoveEntryByBookIds(List<int> bookIds)
     {
         _context.BookLocations.RemoveRange(_context.BookLocations.Where(bl => bookIds.Contains(bl.BookId)));
+        await _context.SaveChangesAsync();
+    }
+    
+    
+    public async Task AddBookToLocations(int bookId, List<int> locationIds)
+    {
+        var list = new List<BookLocation>();
+        
+        foreach (var locationId in locationIds)
+        {
+            list.Add(new BookLocation
+            {
+                BookId = bookId,
+                LocationId = locationId
+            });
+        }
+
+        await _context.BookLocations.AddRangeAsync(list);
         await _context.SaveChangesAsync();
     }
 

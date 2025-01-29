@@ -48,6 +48,7 @@ public class AuthorController : Controller
             await _bookService.DeleteByAuthorId(authorId);
             await _authorService.Delete(authorId);
         }
+
         if (authorIds.Count == 1)
         {
             TempData["Message"] = "The author has been deleted.";

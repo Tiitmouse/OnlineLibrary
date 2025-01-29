@@ -147,9 +147,35 @@ public class BookController : Controller
         var bookEntity = _mapper.Map<Book>(newBook);
         bookEntity.GenreId = (await _genreService.GetByName(newBook.GenreName)).IdGenre;
         bookEntity.AuthorId = (await _authorService.GetByName(newBook.AuthorName)).IdAuthor;
-        
+
         await _bookService.Update(IdBook, bookEntity);
 
+        return RedirectToAction("List");
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        var genres = await _genreService.GetAll();
+        var authors = await _authorService.GetAll();
+        var locations = await _locationService.GetAll();
+
+        var newBookViewModel = new NewBookViewModel
+        {
+            Genres = genres.Select(g => new SelectListItem { Value = g.IdGenre.ToString(), Text = g.GenreName }).ToList(),
+            Authors = authors.Select(a => new SelectListItem { Value = a.IdAuthor.ToString(), Text = a.AuthorName }).ToList(),
+            Locations = locations.Select(l => new SelectListItem { Value = l.IdLocation.ToString(), Text = l.LocationName }).ToList()
+        };
+        return View(newBookViewModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(NewBookViewModel newBook)
+    {
+        var bookEntity = _mapper.Map<Book>(newBook);
+        int bookId = await _bookService.Create(bookEntity); 
+        await _locationService.AddBookToLocations(bookId, newBook.LocationIds);
         return RedirectToAction("List");
     }
 }

@@ -7,7 +7,7 @@ namespace WebApp.Models
     public class DetailsBookViewModel
     {
         public int IdBook { get; set; }
-        [Required(ErrorMessage = "Sto bi ti knjigu bez naslova?")]
+        [Required(ErrorMessage = "it would be nice to have a title, dontcha think?")]
         public string Title { get; set; }
         public string? Description { get; set; }
         public int? PublicationYear { get; set; }
