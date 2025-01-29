@@ -23,6 +23,7 @@
     <button id="prevPage" class="btn btn-secondary navArrow pagination-item">&#10094;</button>
     <span id="pageInfo" class="pagination-item"></span>
     <button id="nextPage" class="btn btn-secondary navArrow pagination-item">&#10095;</button>
+    <a href="@Url.Action("Create", "Book")" class="btn btn-success createNewBook">+</a>
 </div>
 
 <form method="post" asp-action="DeleteSelectedBooks" id="deleteForm">
@@ -60,7 +61,7 @@
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Books</button>
 </form>
 
-    <a href="@Url.Action("Create", "Book")" class="btn btn-success">Create new book</a>
+    
 
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
