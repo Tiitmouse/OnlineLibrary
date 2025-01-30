@@ -54,9 +54,8 @@ else
     <p>No authors found.</p>
 }
 
-<form method="post" action="@Url.ActionLink("Create", "Author")" id="newAuthorForm" style="display: none;">
+<form method="post" action="@Url.Action("Create", "Author")" id="newAuthorForm" style="display: none;">
     <div class="form-group mb-2">
-        
         <input type="text" class="form-control" id="newAuthorName" name="newAuthorName" placeholder="Enter author name" style="width: 300px"/>
         <button type="submit" class="btn btn-primary mb-2" id="createAuthorButton">Create</button>
     </div>
@@ -76,7 +75,7 @@ else
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" data-author-id="@author.IdAuthor" class="confirmEditButton">Confirm</button>
+                    <button type="button" class="btn btn-primary confirmEditButton" data-author-id="@author.IdAuthor">Confirm</button>
                 </div>
             </div>
         </div>
@@ -118,30 +117,31 @@ else
             document.getElementById('newAuthorForm').style.display = 'block';
         });
 
-document.getElementById('newAuthorForm').addEventListener('submit', function (event) {
-    event.preventDefault();
-    const name = this[0].value;
-    if (name) {
-        fetch('@Url.Action("Create", "Author")', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-            },
-            body: JSON.stringify({ authorName: name, idAuthor: 0 }) 
-        })
-        .then(response => response.text()) // Get the response as text
-        .then(text => {
-            console.log(text); // Log the response text
-            if (text.includes('Success')) {
-                location.reload();
+        document.getElementById('newAuthorForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const name = this[0].value;
+            if (name) {
+                fetch('@Url.Action("Create", "Author")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ authorName: name, idAuthor: 0 })
+                })
+                .then(response => response.text())
+                .then(text => {
+                    console.log(text);
+                    if (text.includes('Success')) {
+                        location.reload();
+                    } else {
+                        alert('Error creating author: ' + text);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
             } else {
-                alert('Error creating author: ' + text);
+                alert('Author name cannot be empty');
             }
-        })
-        .catch(error => console.error('Error:', error));
-    } else {
-        alert('Author name cannot be empty');
-    }
-});    </script>
+        });
+    </script>
 }

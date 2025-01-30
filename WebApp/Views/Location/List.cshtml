@@ -37,9 +37,9 @@
                             <input type="text" class="form-control" name="LocationName" value="@location.LocationName" style="width: 300px"/>
                             <input type="text" class="form-control" name="Address" value="@location.Address" style="width: 300px"/>
                             <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#editModal-@location.IdLocation">Update</button>
+                            <button type="button" class="btn btn-outline-dark mb-1" onclick="location.href='@Url.Action("Details", "Location", new { locationId = location.IdLocation })'"> Reservations </button>
                         </div>
                     </form>
-                    <a href="@Url.ActionLink("Details", "Location", new { locationId = location.IdLocation })" class="btn btn-outline-dark mb-2 seereservations">See Reservations</a>
                 </td>
             </tr>
         }
@@ -49,9 +49,8 @@
     <button type="button" class="btn btn-primary" id="addLocationButton">+</button>
 </form>
 
-<form method="post" action="@Url.ActionLink("Create", "Genre")" id="newLocationForm" style="display: none;">
+<form method="post" action="@Url.Action("Create", "Location")" id="newLocationForm" style="display: none;">
     <div class="form-group mb-2">
-        
         <input type="text" class="form-control" id="newLocationName" name="newLocationName" placeholder="Enter location name" style="width: 300px"/>
         <input type="text" class="form-control" id="newLocationAddress" name="newLocationAddress" placeholder="Enter location address" style="width: 300px"/>
         <button type="submit" class="btn btn-primary mb-2" id="createLocationButton">Create</button>
@@ -72,7 +71,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" data-location-id="@location.IdLocation" class="confirmEditButton">Confirm</button>
+                    <button type="button" class="btn btn-primary confirmEditButton" data-location-id="@location.IdLocation">Confirm</button>
                 </div>
             </div>
         </div>
@@ -109,40 +108,38 @@
                 document.getElementById(`editForm-${locationId}`).submit();
             });
         });
-        
-         document.getElementById('addLocationButton').addEventListener('click', function () {
-                   document.getElementById('newLocationForm').style.display = 'block';
-         });
-                
-         document.getElementById('newLocationForm').addEventListener('submit', function (event) {
-                       event.preventDefault();
-                       const name = this[0].value;
-                       const laddress = this[1].value;
-                       if (name) {
-                           fetch('@Url.Action("Create", "Location")', {
-                               method: 'POST',
-                               headers: {
-                                   'Content-Type': 'application/json',
-                                   'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                               },
-                               body: JSON.stringify({ locationName: name, address: laddress, idGenre: 0 }) 
-                           })
-                           .then(response => response.text())
-                           .then(text => {
-                               console.log(text); 
-                               if (text.includes('Success')) {
-                                   location.reload();
-                               } else {
-                                   alert('Error creating location: ' + text);
-                               }
-                           })
-                           .catch(error => console.error('Error:', error));
-                       } else {
-                           alert('Values cannot be empty');
-                       }
-   
-                   });
-        
+
+        document.getElementById('addLocationButton').addEventListener('click', function () {
+            document.getElementById('newLocationForm').style.display = 'block';
+        });
+
+        document.getElementById('newLocationForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const name = this[0].value;
+            const laddress = this[1].value;
+            if (name) {
+                fetch('@Url.Action("Create", "Location")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ locationName: name, address: laddress, idGenre: 0 }) 
+                })
+                .then(response => response.text())
+                .then(text => {
+                    console.log(text); 
+                    if (text.includes('Success')) {
+                        location.reload();
+                    } else {
+                        alert('Error creating location: ' + text);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert('Values cannot be empty');
+            }
+        });
     </script>
     <script>
         const placeholders = ["Search by library...", "Search by address..."];
