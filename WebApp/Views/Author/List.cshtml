@@ -13,40 +13,56 @@
     </div>
 </form>
 
-<form method="post" asp-action="DeleteSelectedAuthors" id="deleteForm">
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Select</th>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var author in Model)
-        {
+@if (Model != null && Model.Any())
+{
+    <form method="post" asp-action="DeleteSelectedAuthors" id="deleteForm">
+        <table class="table">
+            <thead>
             <tr>
-                <td>
-                    <input type="checkbox" name="authorIds" value="@author.IdAuthor"/>
-                </td>
-                <td>@author.IdAuthor</td>
-                <td>
-                    <form method="post" action="@Url.Action("Edit", "Author")" id="editForm-@author.IdAuthor">
-                        <input type="hidden" name="IdAuthor" value="@author.IdAuthor"/>
-                        <div class="form-group mb-2 mr-2">
-                            <input type="text" class="form-control" name="AuthorName" value="@author.AuthorName" style="width: 300px"/>
-                            <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#editModal-@author.IdAuthor">Update</button>
-                        </div>
-                    </form>
-                </td>
+                <th scope="col">Select</th>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
             </tr>
-        }
-        </tbody>
-    </table>
-    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Authors</button>
+            </thead>
+            <tbody>
+            @foreach (var author in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="authorIds" value="@author.IdAuthor"/>
+                    </td>
+                    <td>@author.IdAuthor</td>
+                    <td>
+                        <form method="post" action="@Url.Action("Edit", "Author")" id="editForm-@author.IdAuthor">
+                            <input type="hidden" name="IdAuthor" value="@author.IdAuthor"/>
+                            <div class="form-group mb-2 mr-2">
+                                <input type="text" class="form-control" name="AuthorName" value="@author.AuthorName" style="width: 300px"/>
+                                <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#editModal-@author.IdAuthor">Update</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Authors</button>
+        <button type="button" class="btn btn-primary" id="addAuthorButton">+</button>
+    </form>
+}
+else
+{
+    <p>No authors found.</p>
+}
+
+<form method="post" action="@Url.ActionLink("Create", "Author")" id="newAuthorForm" style="display: none;">
+    <div class="form-group mb-2">
+        
+        <input type="text" class="form-control" id="newAuthorName" name="newAuthorName" placeholder="Enter author name" style="width: 300px"/>
+        <button type="submit" class="btn btn-primary mb-2" id="createAuthorButton">Create</button>
+    </div>
 </form>
 
-@foreach (var author in Model)
+@foreach (var author in Model ?? new List<AuthorViewModel>())
 {
     <div class="modal fade" id="editModal-@author.IdAuthor" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -97,5 +113,35 @@
                 document.getElementById(`editForm-${authorId}`).submit();
             });
         });
-    </script>
+
+        document.getElementById('addAuthorButton').addEventListener('click', function () {
+            document.getElementById('newAuthorForm').style.display = 'block';
+        });
+
+document.getElementById('newAuthorForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const name = this[0].value;
+    if (name) {
+        fetch('@Url.Action("Create", "Author")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: JSON.stringify({ authorName: name, idAuthor: 0 }) 
+        })
+        .then(response => response.text()) // Get the response as text
+        .then(text => {
+            console.log(text); // Log the response text
+            if (text.includes('Success')) {
+                location.reload();
+            } else {
+                alert('Error creating author: ' + text);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    } else {
+        alert('Author name cannot be empty');
+    }
+});    </script>
 }

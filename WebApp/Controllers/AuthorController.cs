@@ -74,4 +74,14 @@ public class AuthorController : Controller
 
         return View("List");
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] AuthorViewModel model)
+    {
+            Author author = new Author
+            {
+                AuthorName = model.AuthorName
+            };
+            await _authorService.Create(author);
+            return Content("Success");    }
 }
