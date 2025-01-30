@@ -76,4 +76,13 @@ public class LocationController : Controller
 
         return View("Details", reservationDetails);
     }
+    public async Task<IActionResult> Create([FromBody] LocationViewModel model)
+    {
+        Location location = new Location
+        {
+            LocationName = model.LocationName,
+            Address = model.Address
+        };
+        await _locationService.Create(location);
+        return Content("Success");    }
 }
