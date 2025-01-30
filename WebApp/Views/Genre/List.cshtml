@@ -44,6 +44,15 @@
         </tbody>
     </table>
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Genres</button>
+    <button type="button" class="btn btn-primary" id="addGenreButton">+</button>
+</form>
+
+<form method="post" action="@Url.ActionLink("Create", "Genre")" id="newGenreForm" style="display: none;">
+    <div class="form-group mb-2">
+        
+        <input type="text" class="form-control" id="newGenreName" name="newGenreName" placeholder="Enter genre name" style="width: 300px"/>
+        <button type="submit" class="btn btn-primary mb-2" id="createGenreButton">Create</button>
+    </div>
 </form>
 
 @foreach (var genre in Model)
@@ -97,5 +106,37 @@
                 document.getElementById(`editForm-${genreId}`).submit();
             });
         });
+        
+        document.getElementById('addGenreButton').addEventListener('click', function () {
+                    document.getElementById('newGenreForm').style.display = 'block';
+                });
+        
+        document.getElementById('newGenreForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const name = this[0].value;
+            if (name) {
+                fetch('@Url.Action("Create", "Genre")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ genreName: name, idGenre: 0 }) 
+                })
+                .then(response => response.text())
+                .then(text => {
+                    console.log(text); 
+                    if (text.includes('Success')) {
+                        location.reload();
+                    } else {
+                        alert('Error creating genre: ' + text);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert('Genre name cannot be empty');
+            }
+        });
+        
     </script>
 }

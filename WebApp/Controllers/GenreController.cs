@@ -75,4 +75,14 @@ public class GenreController  : Controller
         return View("List");
     }
     
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] GenreViewModel model)
+    {
+        Genre genre = new Genre
+        {
+            GenreName = model.GenreName
+        };
+        await _genreService.Create(genre);
+        return Content("Success");    }
 }
+    
