@@ -1,12 +1,14 @@
 @model List<BookViewModel>
-
+@{
+    bool isAdmin = User.Claims.FirstOrDefault(c => c.Type == "admin")?.Value == "True";
+}
 <link href="/css/bookList.css" rel="stylesheet">
 
 <h1>Books</h1>
 
 <form method="get" asp-action="List" id="searchForm">
     <div class="input-group mb-3">
-        <input type="text" name="searchString" class="form-control" id="searchInput" placeholder="Search by title..." value="@ViewData["CurrentFilter"]" />
+        <input type="text" name="searchString" class="form-control" id="searchInput" placeholder="Search by title..." value="@ViewData["CurrentFilter"]"/>
         <div class="input-group-append">
             <button type="submit" class="btn btn-primary">Search</button>
         </div>
@@ -23,15 +25,21 @@
     <button id="prevPage" class="btn btn-secondary navArrow pagination-item">&#10094;</button>
     <span id="pageInfo" class="pagination-item"></span>
     <button id="nextPage" class="btn btn-secondary navArrow pagination-item">&#10095;</button>
-    <a href="@Url.Action("Create", "Book")" class="btn btn-success createNewBook">+</a>
+    @if (isAdmin)
+    {
+        <a href="@Url.Action("Create", "Book")" class="btn btn-success createNewBook">+</a>
+    }
 </div>
 
 <form method="post" asp-action="DeleteSelectedBooks" id="deleteForm">
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">Select</th>
-            <th scope="col">ID</th>
+            @if (isAdmin)
+            {
+                <th scope="col">Select</th>
+                <th scope="col">ID</th>
+            }
             <th scope="col">Title</th>
             <th scope="col">Author</th>
             <th scope="col">Genre</th>
@@ -44,24 +52,31 @@
         @foreach (var book in Model)
         {
             <tr>
-                <td><input type="checkbox" name="bookIds" value="@book.IdBook" /></td>
-                <td>@book.IdBook</td>
+                @if (isAdmin)
+                {
+                    <td>
+                        <input type="checkbox" name="bookIds" value="@book.IdBook"/>
+                    </td>
+                    <td>@book.IdBook</td>
+                }
                 <td>@book.Title</td>
                 <td>@book.AuthorName</td>
                 <td>@book.GenreName</td>
                 <td>@book.Isbn</td>
                 <td>@book.PublicationYear</td>
                 <td>
-                    <a href="@Url.Action("Details", "Book", new {id = @book.IdBook})" class="btn btn-outline-dark">See Details</a>
+                    <a href="@Url.Action("Details", "Book", new { id = @book.IdBook })" class="btn btn-outline-dark">See Details</a>
                 </td>
             </tr>
         }
         </tbody>
     </table>
-    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Books</button>
+    @if (isAdmin)
+    {
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Books</button>
+    }
 </form>
 
-    
 
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -151,5 +166,4 @@
         document.getElementById('confirmDeleteButton').addEventListener('click', function () {
             document.getElementById('deleteForm').submit();
         });
-    </script>
-}
+    </script>}
