@@ -13,7 +13,8 @@
     </div>
 </form>
 
-<form method="post" asp-action="DeleteSelectedGenres" id="deleteForm">
+@if (Model != null && Model.Any())
+{
     <table class="table">
         <thead>
         <tr>
@@ -27,7 +28,10 @@
         {
             <tr>
                 <td>
-                    <input type="checkbox" name="genreIds" value="@genre.IdGenre"/>
+                    <form method="post" asp-action="DeleteSelectedGenres" id="deleteForm">
+                        <input type="checkbox" name="genreIds" value="@genre.IdGenre"/>
+
+                    </form>
                 </td>
                 <td>@genre.IdGenre</td>
                 <td>
@@ -45,7 +49,11 @@
     </table>
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Genres</button>
     <button type="button" class="btn btn-primary" id="addGenreButton">+</button>
-</form>
+}
+else
+{
+    <p>No genres found.</p>
+}
 
 <form method="post" action="@Url.Action("Create", "Genre")" id="newGenreForm" style="display: none;">
     <div class="form-group mb-2">
@@ -54,7 +62,7 @@
     </div>
 </form>
 
-@foreach (var genre in Model)
+@foreach (var genre in Model ?? new List<GenreViewModel>())
 {
     <div class="modal fade" id="editModal-@genre.IdGenre" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -95,6 +103,9 @@
 
 @section Scripts {
     <script>
+    const forms = document.querySelectorAll('form');
+    console.log(forms);
+    
         document.getElementById('confirmDeleteButton').addEventListener('click', function () {
             document.getElementById('deleteForm').submit();
         });
@@ -102,7 +113,12 @@
         document.querySelectorAll('.confirmEditButton').forEach(button => {
             button.addEventListener('click', function () {
                 const genreId = this.getAttribute('data-genre-id');
-                document.getElementById(`editForm-${genreId}`).submit();
+                const form = document.getElementById(`editForm-${genreId}`);
+                if (form) {
+                    form.submit();
+                } else {
+                    console.error(`Form with ID editForm-${genreId} not found`);
+                }
             });
         });
 
