@@ -28,7 +28,7 @@ public class UserController : Controller
     {
         return View();
     }
-
+    
     [HttpPost]
     public async Task<IActionResult> Login([FromForm] UserLoginDto dto)
     {
@@ -46,7 +46,8 @@ public class UserController : Controller
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            ViewBag.ErrorMessage = ex.Message;
+            return View();
         }
     }
 
