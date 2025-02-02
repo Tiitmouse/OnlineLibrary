@@ -9,6 +9,7 @@ public interface IReservationService
 {
     public Task<Reservation> Get(int id);
     public Task<Reservation> GetByBookId(int bookId);
+    public Task<List<Reservation>> GetByUserId(int userId);
     public Task Cancel(int id);
     public Task ChangeStatus(int id, bool newStatus);
     public Task<int> Reserve(Reservation newReservation);
@@ -60,6 +61,21 @@ public class ReservationService : IReservationService
         }
           await _logService.Create($"Reservation with book ID {bookId} fetched successfully", Importance.Low);
           return reservation;
+    }
+
+    public async Task<List<Reservation>> GetByUserId(int userId)
+    {
+        var reservations = await _context.Reservations
+            .AsNoTracking()
+            .Include(r => r.BookLocation)
+            .Include(r => r.BookLocation.Book)
+            .Include(r => r.BookLocation.Location)
+            .Include(r => r.User)
+            .Where(r => r.User.IdUser == userId)
+            .ToListAsync();
+
+        await _logService.Create($"Reservation with user ID {userId} fetched successfully", Importance.Low);
+        return reservations;
     }
 
     public async Task Cancel(int id)

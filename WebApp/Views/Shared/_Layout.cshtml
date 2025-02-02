@@ -57,6 +57,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" href="@Url.ActionLink("List","Book")">Books</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="@Url.ActionLink("UserReservations","Reservation", new {username = @User.Identity.Name})">MyReservations</a>
+                            </li>
                             <li class="nav-item ms-auto">
                                 <a class="nav-link text-dark" href="@Url.ActionLink("Details","User", new {username = @User.Identity.Name})">@User.Identity.Name</a>
                             </li>

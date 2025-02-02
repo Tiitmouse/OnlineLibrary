@@ -9,12 +9,14 @@ namespace WebApp.Controllers;
 public class ReservationController : Controller
 {
     private readonly IReservationService _reservationService;
+    private readonly IUserServices _userServices;
     private readonly IMapper _mapper;
 
-    public ReservationController(IReservationService reservationService, IMapper mapper)
+    public ReservationController(IReservationService reservationService, IMapper mapper, IUserServices userServices)
     {
         _reservationService = reservationService;
         _mapper = mapper;
+        _userServices = userServices;
     }
    
     [HttpGet]
@@ -37,12 +39,21 @@ public class ReservationController : Controller
     }
     
     [HttpPost]
-    [HttpPost]
     public async Task<IActionResult> CancelReservation(int reservationId, int locationId)
     {
         await _reservationService.Cancel(reservationId);
 
         TempData["Message"] = "The reservation has been canceled.";
         return RedirectToAction("Details", "Location", new { locationId = locationId });
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> UserReservations(string username)
+    {
+        User user = await _userServices.GetUser(username);
+        var reservations = await _reservationService.GetByUserId(user.IdUser);
+        var userReservations = _mapper.Map<List<UserReservation>>(reservations);
+
+        return View("UserReservations", userReservations);
     }
 }
