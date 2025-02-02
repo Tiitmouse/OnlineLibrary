@@ -26,6 +26,7 @@ public class UserController : Controller
 
     public IActionResult Login(string returnUrl)
     {
+        ViewBag.SuccessMessage = TempData["SuccessMessage"];
         return View();
     }
     
@@ -59,17 +60,30 @@ public class UserController : Controller
     [HttpPost]
     public async Task<IActionResult> Register(User user, string password)
     {
+        if (string.IsNullOrEmpty(user.Username))
+        {
+            ViewBag.ErrorMessage = "Username is required.";
+            return View();
+        }
+
+        if (string.IsNullOrEmpty(password))
+        {
+            ViewBag.ErrorMessage = "Password is required.";
+            return View();
+        }
+
         try
         {
             await _userServices.Register(user, password);
+            TempData["SuccessMessage"] = "Registration successful. Please log in.";
             return RedirectToAction("Login", "User");
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            ViewBag.ErrorMessage = ex.Message;
+            return View();
         }
     }
-
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
