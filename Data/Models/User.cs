@@ -15,5 +15,7 @@ public partial class User
 
     public bool? IsAdmin { get; set; }
 
+    public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 }

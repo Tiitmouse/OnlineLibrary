@@ -27,6 +27,8 @@ public partial class RwaContext : DbContext
 
     public virtual DbSet<Log> Logs { get; set; }
 
+    public virtual DbSet<Rating> Ratings { get; set; }
+
     public virtual DbSet<Reservation> Reservations { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -38,7 +40,7 @@ public partial class RwaContext : DbContext
     {
         modelBuilder.Entity<Author>(entity =>
         {
-            entity.HasKey(e => e.IdAuthor).HasName("PK__Authors__7411B25439A3ACA8");
+            entity.HasKey(e => e.IdAuthor).HasName("PK__Authors__7411B25428631CF0");
 
             entity.Property(e => e.IdAuthor).HasColumnName("id_author");
             entity.Property(e => e.AuthorName)
@@ -49,9 +51,9 @@ public partial class RwaContext : DbContext
 
         modelBuilder.Entity<Book>(entity =>
         {
-            entity.HasKey(e => e.IdBook).HasName("PK__Books__DAE712E8BE432770");
+            entity.HasKey(e => e.IdBook).HasName("PK__Books__DAE712E83E789D20");
 
-            entity.HasIndex(e => e.Isbn, "UQ__Books__99F9D0A42DF65554").IsUnique();
+            entity.HasIndex(e => e.Isbn, "UQ__Books__99F9D0A4A759FC6C").IsUnique();
 
             entity.Property(e => e.IdBook).HasColumnName("id_book");
             entity.Property(e => e.AuthorId).HasColumnName("author_id");
@@ -72,17 +74,17 @@ public partial class RwaContext : DbContext
             entity.HasOne(d => d.Author).WithMany(p => p.Books)
                 .HasForeignKey(d => d.AuthorId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Books__author_id__68487DD7");
+                .HasConstraintName("FK__Books__author_id__3D5E1FD2");
 
             entity.HasOne(d => d.Genre).WithMany(p => p.Books)
                 .HasForeignKey(d => d.GenreId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Books__genre_id__693CA210");
+                .HasConstraintName("FK__Books__genre_id__3E52440B");
         });
 
         modelBuilder.Entity<BookLocation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Book_Loc__3213E83FAC1A38F1");
+            entity.HasKey(e => e.Id).HasName("PK__Book_Loc__3213E83FA7AAF59E");
 
             entity.ToTable("Book_Location");
 
@@ -93,18 +95,18 @@ public partial class RwaContext : DbContext
             entity.HasOne(d => d.Book).WithMany(p => p.BookLocations)
                 .HasForeignKey(d => d.BookId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Book_Loca__book___6E01572D");
+                .HasConstraintName("FK__Book_Loca__book___4316F928");
 
             entity.HasOne(d => d.Location).WithMany(p => p.BookLocations)
                 .HasForeignKey(d => d.LocationId)
-                .HasConstraintName("FK__Book_Loca__locat__6EF57B66");
+                .HasConstraintName("FK__Book_Loca__locat__440B1D61");
         });
 
         modelBuilder.Entity<Genre>(entity =>
         {
-            entity.HasKey(e => e.IdGenre).HasName("PK__Genres__CB767C695E573A06");
+            entity.HasKey(e => e.IdGenre).HasName("PK__Genres__CB767C693E7C70BD");
 
-            entity.HasIndex(e => e.GenreName, "UQ__Genres__1E98D15124EF20F4").IsUnique();
+            entity.HasIndex(e => e.GenreName, "UQ__Genres__1E98D15177A58CA9").IsUnique();
 
             entity.Property(e => e.IdGenre).HasColumnName("id_genre");
             entity.Property(e => e.GenreName)
@@ -115,7 +117,7 @@ public partial class RwaContext : DbContext
 
         modelBuilder.Entity<Location>(entity =>
         {
-            entity.HasKey(e => e.IdLocation).HasName("PK__Location__276C0C698317F53F");
+            entity.HasKey(e => e.IdLocation).HasName("PK__Location__276C0C69F7E27A54");
 
             entity.Property(e => e.IdLocation).HasColumnName("id_location");
             entity.Property(e => e.Address)
@@ -130,7 +132,7 @@ public partial class RwaContext : DbContext
 
         modelBuilder.Entity<Log>(entity =>
         {
-            entity.HasKey(e => e.IdLog).HasName("PK__Logs__6CC851FE9092F391");
+            entity.HasKey(e => e.IdLog).HasName("PK__Logs__6CC851FE06FD988B");
 
             entity.Property(e => e.IdLog).HasColumnName("id_log");
             entity.Property(e => e.Date)
@@ -143,9 +145,33 @@ public partial class RwaContext : DbContext
                 .HasColumnName("message");
         });
 
+        modelBuilder.Entity<Rating>(entity =>
+        {
+            entity.HasKey(e => e.IdRating).HasName("PK__Ratings__12074E47F787B4B6");
+
+            entity.Property(e => e.IdRating).HasColumnName("id_rating");
+            entity.Property(e => e.BookId).HasColumnName("book_id");
+            entity.Property(e => e.Comment)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("comment");
+            entity.Property(e => e.Rating1).HasColumnName("rating");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.Book).WithMany(p => p.Ratings)
+                .HasForeignKey(d => d.BookId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Ratings__book_id__534D60F1");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Ratings)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__Ratings__user_id__52593CB8");
+        });
+
         modelBuilder.Entity<Reservation>(entity =>
         {
-            entity.HasKey(e => e.IdReservation).HasName("PK__Reservat__92EE588FBA5560B1");
+            entity.HasKey(e => e.IdReservation).HasName("PK__Reservat__92EE588F98274C09");
 
             entity.Property(e => e.IdReservation).HasColumnName("id_reservation");
             entity.Property(e => e.BookLocationId).HasColumnName("bookLocation_id");
@@ -161,19 +187,19 @@ public partial class RwaContext : DbContext
             entity.HasOne(d => d.BookLocation).WithMany(p => p.Reservations)
                 .HasForeignKey(d => d.BookLocationId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Reservati__bookL__7B5B524B");
+                .HasConstraintName("FK__Reservati__bookL__4D94879B");
 
             entity.HasOne(d => d.User).WithMany(p => p.Reservations)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Reservati__user___7A672E12");
+                .HasConstraintName("FK__Reservati__user___4CA06362");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.IdUser).HasName("PK__Users__D2D14637828EA422");
+            entity.HasKey(e => e.IdUser).HasName("PK__Users__D2D146372FB5736A");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__F3DBC572945CE907").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__F3DBC572BB8EE5A8").IsUnique();
 
             entity.Property(e => e.IdUser).HasColumnName("id_user");
             entity.Property(e => e.FullName)
