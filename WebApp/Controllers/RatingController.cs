@@ -19,7 +19,7 @@ public class RatingController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddRating(RatingViewModel ratingViewModel)
+    public async Task<IActionResult> AddRating([FromBody]RatingViewModel ratingViewModel)
     {
         Rating rating = new Rating
         {

@@ -19,7 +19,7 @@
 
 <div class="container">
     <div class="card">
-        @* -------------------------------------------------------- card header --------------------------------------------------------*@
+        @* -------------------------------------------------------- card header and personal rating --------------------------------------------------------*@
         <div class="card-body">
             <h3 class="card-title d-flex justify-content-start g-3">
                 <span>
@@ -32,6 +32,28 @@
                 <div class="col-lg-5 col-md-5 col-sm-6">
                     <div class="white-box text-center">
                         <img src="https://i.pinimg.com/originals/00/ec/d9/00ecd9ee4a5c53ff2c65c189df7e48ec.gif" class="img-responsive" alt="(=^･ω･^=)" style="height: 600px;width: 430px">
+                    </div>
+                    <div style="margin-top: 20px">
+                        <form id="addRatingForm">
+                            <input type="hidden" name="UserId" value="@userId"/>
+                            <input type="hidden" name="BookId" value="@Model.IdBook"/>
+                            <div class="form-group">
+                                <label for="rating" class="h3">Rate this book:</label>
+                                <div id="starRating" class="star-rating">
+                                    <span class="fa fa-star" data-value="1"></span>
+                                    <span class="fa fa-star" data-value="2"></span>
+                                    <span class="fa fa-star" data-value="3"></span>
+                                    <span class="fa fa-star" data-value="4"></span>
+                                    <span class="fa fa-star" data-value="5"></span>
+                                </div>
+                                <input type="hidden" id="rating" name="Rating" value="0"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment">Comment:</label>
+                                <textarea id="comment" name="Comment" class="form-control"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="margin-top: 20px">Submit</button>
+                        </form>
                     </div>
                     <div style="margin-top: 20px">
                         @if (isAdmin)
@@ -95,7 +117,7 @@
                                             }
 
                                             <td class="d-flex justify-content-between">
-                                            <span>  @rating.Comment </span>
+                                                <span> @rating.Comment </span>
                                                 <span> @GetStars(rating.Rating)</span>
                                             </td>
                                         </tr>
@@ -103,7 +125,6 @@
                                 }
                             </table>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -143,5 +164,46 @@
                 document.getElementById('bookLocationId').value = this.getAttribute('data-book-location-id');
             });
         });
+        
+        document.querySelectorAll('#starRating .fa-star').forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = this.getAttribute('data-value');
+                document.getElementById('rating').value = rating;
+                document.querySelectorAll('#starRating .fa-star').forEach(s => {
+                    s.classList.remove('checked');
+                });
+                for (let i = 0; i < rating; i++) {
+                    document.querySelectorAll('#starRating .fa-star')[i].classList.add('checked');
+                }
+            });
+        });
+        
+document.getElementById('addRatingForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    const data = {};
+
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+
+    fetch('@Url.Action("AddRating", "Rating")', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            location.reload();
+        } else {
+            alert('Error adding rating: ' + result.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
     </script>
 }

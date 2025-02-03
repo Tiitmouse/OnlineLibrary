@@ -56,3 +56,14 @@
     text-align: center;
     width: 80%;
 }
+
+
+.star-rating .fa-star {
+    font-size: 24px;
+    cursor: pointer;
+    color: #ddd;
+}
+
+.star-rating .fa-star.checked {
+    color: #ffcc00;
+}
