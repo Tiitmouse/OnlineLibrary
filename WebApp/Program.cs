@@ -22,6 +22,7 @@ builder.Services.AddScoped<ILocationService, LocationServices>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ILogService, LogService>();
+builder.Services.AddScoped<IRatingService, RatingServices>();
 
 
 builder.Services.AddAutoMapper(typeof(MapperProfile));

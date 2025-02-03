@@ -22,6 +22,8 @@ namespace WebApp.Models
         [Required(ErrorMessage = "what genre is this? a mystery?")]
         public string Genre { get; set; }
         
+        public List<RatingViewModel> Ratings { get; set; }
+        
         public List<LibraryAvailabilityViewModel> Libraries { get; set; }
         public IEnumerable<SelectListItem> Genres { get; set; }
         public IEnumerable<SelectListItem> Locations { get; set; }

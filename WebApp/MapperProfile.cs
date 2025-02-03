@@ -77,6 +77,7 @@ public class MapperProfile : Profile
         CreateMap<User, UserDetailsViewModel>();
         CreateMap<UserDetailsViewModel, User>();
 
-
+        CreateMap<RatingViewModel, Rating>();
+        CreateMap<Rating, RatingViewModel>();
     }
 }
