@@ -24,11 +24,13 @@ public class BookServices : IBookService
 {
     private readonly RwaContext _context;
     private readonly ILogService _logService;
+    private readonly IRatingService _ratingService;
 
-    public BookServices(RwaContext context, ILogService logService)
+    public BookServices(RwaContext context, ILogService logService, IRatingService ratingService)
     {
         _context = context;
         _logService = logService;
+        _ratingService = ratingService;
     }
 
     public async Task<Book> Get(int id)
@@ -56,6 +58,7 @@ public class BookServices : IBookService
             await _logService.Create("Cannot delete book with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Book with id {id} not found");
         }
+        await _ratingService.DeleteByBookID(id);
         _context.Books.Remove(book);
         await _logService.Create("Book with ID {id} successfully deleted", Importance.High);
         await _context.SaveChangesAsync();

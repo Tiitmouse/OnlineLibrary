@@ -14,6 +14,7 @@ namespace WebApp.Models
         public string Isbn { get; set; }
         public string AuthorName { get; set; }
         public string GenreName { get; set; }
+        
         public List<LibraryAvailabilityViewModel> Libraries { get; set; }
 
         public IEnumerable<SelectListItem> Genres { get; set; }

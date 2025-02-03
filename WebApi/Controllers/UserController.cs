@@ -12,12 +12,14 @@ namespace WebApi.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserServices _userServices;
+    private readonly IRatingService _ratingService;
     private readonly IMapper _mapper;
 
-    public UserController(IUserServices userServices, IMapper mapper)
+    public UserController(IUserServices userServices, IMapper mapper, IRatingService ratingService)
     {
         _userServices = userServices;
         _mapper = mapper;
+        _ratingService = ratingService;
     }
     
     [Authorize]
@@ -41,6 +43,7 @@ public class UserController : ControllerBase
     [HttpDelete("[action]")]
     public ActionResult DeleteUser(int id)
     {
+        _ratingService.DeleteByUserID(id);
         _userServices.DeleteUser(id);
         return Ok();
     }
