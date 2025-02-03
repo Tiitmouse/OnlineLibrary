@@ -107,6 +107,7 @@ public class RatingServices  : IRatingService
     {
         return await _context.Ratings
             .AsNoTracking()
+            .Include(r => r.User )
             .OrderByDescending(r => r.Rating1)
             .ToListAsync();
     }

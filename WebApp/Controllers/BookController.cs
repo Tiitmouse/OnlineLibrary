@@ -16,10 +16,11 @@ public class BookController : Controller
     private readonly IAuthorService _authorService;
     private readonly IGenreService _genreService;
     private readonly IRatingService _ratingService;
+    private readonly IUserServices _userService;
     private readonly IMapper _mapper;
 
     public BookController(IBookService bookService, IMapper mapper, ILocationService locationService,
-        IAuthorService authorService, IGenreService genreService, IRatingService ratingService)
+        IAuthorService authorService, IGenreService genreService, IRatingService ratingService, IUserServices userService)
     {
         _bookService = bookService;
         _mapper = mapper;
@@ -27,6 +28,7 @@ public class BookController : Controller
         _authorService = authorService;
         _genreService = genreService;
         _ratingService = ratingService;
+        _userService = userService;
     }
 
     [HttpGet]
@@ -97,7 +99,7 @@ public class BookController : Controller
         var ratings = await _ratingService.GetAll();
         var bookRatings = ratings.Where(r => r.BookId == id).ToList();
         var libraries = await _locationService.GetByBookID(id);
-        var averageRating = bookRatings.Any() ? bookRatings.Average(r => r.Rating1.Value) : 0;
+        var averageRating = bookRatings.Any() ? bookRatings.Average(r => r.Rating1) : 0;
 
         var viewModel = new DetailsBookViewModel
         {
@@ -120,8 +122,9 @@ public class BookController : Controller
             Ratings = bookRatings.Select(r => new RatingViewModel
             {
                 UserId = r.UserId,
-                Rating1 = r.Rating1,
-                Comment = r.Comment
+                Rating = r.Rating1,
+                Comment = r.Comment,
+                Username = r.User.Username
             }).ToList()
         };
 

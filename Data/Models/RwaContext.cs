@@ -160,12 +160,10 @@ public partial class RwaContext : DbContext
 
             entity.HasOne(d => d.Book).WithMany(p => p.Ratings)
                 .HasForeignKey(d => d.BookId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Ratings__book_id__534D60F1");
 
             entity.HasOne(d => d.User).WithMany(p => p.Ratings)
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Ratings__user_id__52593CB8");
         });
 

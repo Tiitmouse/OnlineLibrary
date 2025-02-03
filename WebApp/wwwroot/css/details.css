@@ -35,3 +35,24 @@
     background-color: white; 
     color: inherit; 
 }
+
+
+.ratings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.ratings-table td {
+    padding: 8px;
+}
+
+.ratings-table td:first-child {
+    font-weight: bold;
+    width: 20%;
+}
+
+.ratings-table td:last-child {
+    text-align: center;
+    width: 80%;
+}

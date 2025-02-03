@@ -28,10 +28,11 @@ public class MapperProfile : Profile
             .ForMember(d => d.Ratings, opt => opt.MapFrom(b => b.Ratings.Select(r => new RatingViewModel
             {
                 UserId = r.UserId,
-                Rating1 = r.Rating1,
-                Comment = r.Comment
+                Rating = r.Rating1,
+                Comment = r.Comment,
+                Username = r.User.Username
             })))
-            .ForMember(d => d.AverageRating, opt => opt.MapFrom(b => b.Ratings.Any() ? b.Ratings.Average(r => r.Rating1.Value) : 0));;
+            .ForMember(d => d.AverageRating, opt => opt.MapFrom(b => b.Ratings.Any() ? b.Ratings.Average(r => r.Rating1) : 0));;
 
         CreateMap<NewBookViewModel, Book>()
             .ForMember(b => b.IdBook, opt => opt.Ignore())

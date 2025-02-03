@@ -1,6 +1,7 @@
 @model DetailsBookViewModel
 
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <link href="/css/details.css" rel="stylesheet">
 
 @{
@@ -18,6 +19,7 @@
 
 <div class="container">
     <div class="card">
+        @* -------------------------------------------------------- card header --------------------------------------------------------*@
         <div class="card-body">
             <h3 class="card-title d-flex justify-content-start g-3">
                 <span>
@@ -25,6 +27,7 @@
                 </span>
             </h3>
             <h6 class="card-subtitle">@Model.GenreName</h6>
+            @* -------------------------------------------------------- action buttons and img --------------------------------------------------------*@
             <div class="row">
                 <div class="col-lg-5 col-md-5 col-sm-6">
                     <div class="white-box text-center">
@@ -35,9 +38,9 @@
                         {
                             <a href="@Url.Action("Edit", "Book", new { id = @Model.IdBook })" class="btn btn-primary">Edit</a>
                         }
-                        <a href="@Url.Action("List", "Book")" class="btn btn-secondary" >Back to List</a>
+                        <a href="@Url.Action("List", "Book")" class="btn btn-secondary">Back to List</a>
                     </div>
-                    
+                    @* -------------------------------------------------------- summary and availability --------------------------------------------------------*@
                 </div>
                 <div class="col-lg-7 col-md-7 col-sm-6">
                     <h4 class="box-title mt-5">Quick summary</h4>
@@ -69,13 +72,44 @@
                             </tbody>
                         </table>
                     </div>
+                    @* -------------------------------------------------------- ratings --------------------------------------------------------*@
                     <div>
-                        <h3 class="box-title mt-5">Ratings </h3> @*TODO Implement ratings*@
+                        <h3 class="box-title mt-5">Ratings @Model.AverageRating.ToString("F2") ☆ </h3> @*TODO Implement ratings*@
+                        <div>
+                            <table>
+                                @foreach (var rating in Model.Ratings)
+                                {
+                                    <table class="ratings-table">
+                                        <tr>
+                                            <td>@rating.Username</td>
+
+                                            @functions {
+
+                                                string GetStars(int rating)
+                                                {
+                                                    var fullStars = new string('★', rating);
+                                                    var emptyStars = new string('☆', 5 - rating);
+                                                    return fullStars + emptyStars;
+                                                }
+
+                                            }
+
+                                            <td class="d-flex justify-content-between">
+                                            <span>  @rating.Comment </span>
+                                                <span> @GetStars(rating.Rating)</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            </table>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @* -------------------------------------------------------- confirm modal -------------------------------------------------------- *@
     <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -98,6 +132,9 @@
         </div>
     </div>
 </div>
+
+
+@* -------------------------------------------------------- scripts --------------------------------------------------------*@
 
 @section Scripts {
     <script>
