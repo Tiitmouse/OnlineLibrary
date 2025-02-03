@@ -47,6 +47,23 @@ public class ReservationController : Controller
         return RedirectToAction("Details", "Location", new { locationId = locationId });
     }
     
+    public async Task<IActionResult> ReturnReservation(int reservationId, int locationId, string user)
+    {
+        await _reservationService.Cancel(reservationId);
+
+        TempData["Message"] = "The reservation has been canceled.";
+        return RedirectToAction("UserReservations","Reservation", new {username = user});
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> PickupReservation(int reservationId, string user)
+    {
+        await _reservationService.ChangeStatus(reservationId, true);
+
+        TempData["Message"] = "The reservation has been picked up.";
+        return RedirectToAction("UserReservations","Reservation", new {username = user});
+    }
+    
     [HttpGet]
     public async Task<IActionResult> UserReservations(string username)
     {

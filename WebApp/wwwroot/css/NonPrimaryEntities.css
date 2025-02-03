@@ -3,24 +3,12 @@
     align-items: center;
 }
 
-.mb-2 {
-    margin-bottom: 0.5rem;
-}
-
-.mr-2 {
-    margin-right: 0.5rem;
-}
-
 .form-group {
     margin-bottom: 0;
     display: flex;
     align-items: center;
 }
 
-.btn-success {
-    margin-left: 50px;
-}
-
-.btn-outline-dark{
+.btn-success, .btn-outline-dark, .btn-outline-success {
     margin-left: 50px;
 }
