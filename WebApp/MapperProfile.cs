@@ -24,7 +24,14 @@ public class MapperProfile : Profile
                 LocationAddress = l.Location.Address,
                 IsAvailable = !l.Reservations.Any(r => r.BookLocation.BookId == b.IdBook),
                 BookLocationId = l.Id
-            })));
+            })))
+            .ForMember(d => d.Ratings, opt => opt.MapFrom(b => b.Ratings.Select(r => new RatingViewModel
+            {
+                UserId = r.UserId,
+                Rating1 = r.Rating1,
+                Comment = r.Comment
+            })))
+            .ForMember(d => d.AverageRating, opt => opt.MapFrom(b => b.Ratings.Any() ? b.Ratings.Average(r => r.Rating1.Value) : 0));;
 
         CreateMap<NewBookViewModel, Book>()
             .ForMember(b => b.IdBook, opt => opt.Ignore())

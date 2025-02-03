@@ -15,16 +15,18 @@ public class BookController : Controller
     private readonly ILocationService _locationService;
     private readonly IAuthorService _authorService;
     private readonly IGenreService _genreService;
+    private readonly IRatingService _ratingService;
     private readonly IMapper _mapper;
 
     public BookController(IBookService bookService, IMapper mapper, ILocationService locationService,
-        IAuthorService authorService, IGenreService genreService)
+        IAuthorService authorService, IGenreService genreService, IRatingService ratingService)
     {
         _bookService = bookService;
         _mapper = mapper;
         _locationService = locationService;
         _authorService = authorService;
         _genreService = genreService;
+        _ratingService = ratingService;
     }
 
     [HttpGet]
@@ -82,14 +84,22 @@ public class BookController : Controller
     {
         return View();
     }
-
+    
     [HttpGet]
     public async Task<IActionResult> Details(int id)
     {
         var book = await _bookService.Get(id);
-        var libraries = await _locationService.GetByBookID(id);
+        if (book == null)
+        {
+            return NotFound();
+        }
 
-        DetailsBookViewModel viewModel = new DetailsBookViewModel
+        var ratings = await _ratingService.GetAll();
+        var bookRatings = ratings.Where(r => r.BookId == id).ToList();
+        var libraries = await _locationService.GetByBookID(id);
+        var averageRating = bookRatings.Any() ? bookRatings.Average(r => r.Rating1.Value) : 0;
+
+        var viewModel = new DetailsBookViewModel
         {
             IdBook = book.IdBook,
             Title = book.Title,
@@ -98,6 +108,7 @@ public class BookController : Controller
             Isbn = book.Isbn,
             AuthorName = book.Author.AuthorName,
             GenreName = book.Genre.GenreName,
+            AverageRating = averageRating,
             Libraries = libraries.Select(l => new LibraryAvailabilityViewModel
             {
                 LocationId = l.LocationId,
@@ -105,6 +116,12 @@ public class BookController : Controller
                 LocationAddress = l.Location.Address,
                 IsAvailable = !l.Reservations.Any(r => r.BookLocation.BookId == id),
                 BookLocationId = l.Id
+            }).ToList(),
+            Ratings = bookRatings.Select(r => new RatingViewModel
+            {
+                UserId = r.UserId,
+                Rating1 = r.Rating1,
+                Comment = r.Comment
             }).ToList()
         };
 
