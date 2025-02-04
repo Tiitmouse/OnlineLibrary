@@ -2,9 +2,19 @@
 
 @{
     ViewData["Title"] = "Create Book";
+    ViewBag.Title = "Book create";
 }
 
 <h1>Create Book</h1>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @ViewBag.ErrorMessage
+        <br />
+        <small>@ViewBag.ErrorDetails</small>
+    </div>
+}
 
 <div class="container">
     <div class="row justify-content-left">

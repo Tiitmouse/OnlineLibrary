@@ -53,13 +53,13 @@ else
 {
     <p>No authors found.</p>
 }
-
 <form method="post" action="@Url.Action("Create", "Author")" id="newAuthorForm" style="display: none;">
     <div class="form-group mb-2">
         <input type="text" class="form-control" id="newAuthorName" name="newAuthorName" placeholder="Enter author name" style="width: 300px"/>
         <button type="submit" class="btn btn-primary mb-2" id="createAuthorButton">Create</button>
     </div>
 </form>
+
 
 @foreach (var author in Model ?? new List<AuthorViewModel>())
 {
@@ -104,7 +104,7 @@ else
     <script>
     const forms = document.querySelectorAll('form');
     console.log(forms);
-    
+
         document.getElementById('confirmDeleteButton').addEventListener('click', function () {
             document.getElementById('deleteForm').submit();
         });

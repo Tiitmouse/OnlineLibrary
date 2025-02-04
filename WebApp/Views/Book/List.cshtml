@@ -1,10 +1,20 @@
 @model List<BookViewModel>
 @{
     bool isAdmin = User.Claims.FirstOrDefault(c => c.Type == "admin")?.Value == "True";
+    ViewBag.Title = "Book List";
 }
 <link href="/css/bookList.css" rel="stylesheet">
 
 <h1>Books</h1>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @ViewBag.ErrorMessage
+        <br />
+        <small>@ViewBag.ErrorDetails</small>
+    </div>
+}
 
 <form method="get" asp-action="List" id="searchForm">
     <div class="input-group mb-3">
@@ -14,7 +24,8 @@
         </div>
     </div>
 </form>
-
+@if (Model != null && Model.Any())
+{
 <div class="pagination-controls">
     <label class="pagination-item" for="pageSizeSelect">Books per page:</label>
     <select id="pageSizeSelect" class="form-control pagination-item" style="width: auto; display: inline-block;">
@@ -76,7 +87,11 @@
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Books</button>
     }
 </form>
-
+}
+else
+{
+    <p>No authors found.</p>
+}
 
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -111,31 +126,33 @@
             let currentPage = 1;
             let booksPerPage = 10;
 
-            function fetchBooks(page, perPage) {
-                const searchString = $('#searchInput').val();
-                $.ajax({
-                    url: '/Book/List',
-                    type: 'GET',
-                    data: {
-                        searchString: searchString,
-                        pageNumber: page,
-                        pageSize: perPage
-                    },
-                    success: function(data) {
-                        $('#bookTableBody').html($(data).find('#bookTableBody').html());
-                        updatePagination(page, perPage);
-                    },
-                    error: function() {
-                        alert('Failed to fetch books');
-                    }
-                });
-            }
 
-            function updatePagination(page, perPage) {
-                $('#pageInfo').text(`${page}`);
-                $('#prevPage').prop('disabled', page === 1);
-                $('#nextPage').prop('disabled', $('#bookTableBody tr').length < perPage);
-            }
+function fetchBooks(page, perPage) {
+    const searchString = $('#searchInput').val();
+    $.ajax({
+        url: '/Book/List',
+        type: 'GET',
+        data: {
+            searchString: searchString,
+            pageNumber: page,
+            pageSize: perPage
+        },
+        success: function(data) {
+            const newBooks = $(data).find('#bookTableBody tr').length;
+            $('#bookTableBody').html($(data).find('#bookTableBody').html());
+            updatePagination(page, perPage, newBooks);
+        },
+        error: function() {
+            alert('Failed to fetch books');
+        }
+    });
+}
+
+function updatePagination(page, perPage, newBooks) {
+    $('#pageInfo').text(`${page}`);
+    $('#prevPage').prop('disabled', page === 1);
+    $('#nextPage').prop('disabled', newBooks < perPage);
+}
 
             $('#pageSizeSelect').change(function() {
                 booksPerPage = $(this).val();
@@ -166,4 +183,5 @@
         document.getElementById('confirmDeleteButton').addEventListener('click', function () {
             document.getElementById('deleteForm').submit();
         });
-    </script>}
+    </script>
+    }

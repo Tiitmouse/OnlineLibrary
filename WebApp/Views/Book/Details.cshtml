@@ -5,10 +5,20 @@
 <link href="/css/details.css" rel="stylesheet">
 
 @{
+    ViewBag.Title = "Book details";
     var message = TempData["Message"] as string;
     var isAdmin = User.Claims.FirstOrDefault(c => c.Type == "admin")?.Value == "True";
     int userId = User.Claims.FirstOrDefault(c => c.Type == "id") != null ? int.Parse(User.Claims.FirstOrDefault(c => c.Type == "id").Value) : 0;
     var canRate = !isAdmin && !Model.Ratings.Any(r => r.UserId == userId);
+}
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @ViewBag.ErrorMessage
+        <br />
+        <small>@ViewBag.ErrorDetails</small>
+    </div>
 }
 
 @if (!string.IsNullOrEmpty(message))

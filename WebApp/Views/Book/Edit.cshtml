@@ -2,7 +2,20 @@
 
 <link href="/css/details.css" rel="stylesheet">
 
+@{
+    ViewBag.Title = "Book edit";
+}
+
 <h2>Edit Book</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @ViewBag.ErrorMessage
+        <br />
+        <small>@ViewBag.ErrorDetails</small>
+    </div>
+}
 
 <form asp-action="EditAction" method="post" id="editForm">
     <input type="hidden" asp-for="@Model.IdBook" />
