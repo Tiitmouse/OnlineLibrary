@@ -8,6 +8,7 @@
     var message = TempData["Message"] as string;
     var isAdmin = User.Claims.FirstOrDefault(c => c.Type == "admin")?.Value == "True";
     int userId = User.Claims.FirstOrDefault(c => c.Type == "id") != null ? int.Parse(User.Claims.FirstOrDefault(c => c.Type == "id").Value) : 0;
+    var canRate = !isAdmin && Model.Ratings.Any(r => r.UserId == userId) != null;
 }
 
 @if (!string.IsNullOrEmpty(message))
@@ -27,33 +28,36 @@
                 </span>
             </h3>
             <h6 class="card-subtitle">@Model.GenreName</h6>
-            @* -------------------------------------------------------- action buttons and img --------------------------------------------------------*@
+            @* -------------------------------------------------------- action buttons, img and personal rating --------------------------------------------------------*@
             <div class="row">
                 <div class="col-lg-5 col-md-5 col-sm-6">
                     <div class="white-box text-center">
                         <img src="https://i.pinimg.com/originals/00/ec/d9/00ecd9ee4a5c53ff2c65c189df7e48ec.gif" class="img-responsive" alt="(=^･ω･^=)" style="height: 600px;width: 430px">
                     </div>
                     <div style="margin-top: 20px">
-                        <form id="addRatingForm">
-                            <input type="hidden" name="UserId" value="@userId"/>
-                            <input type="hidden" name="BookId" value="@Model.IdBook"/>
-                            <div class="form-group">
-                                <label for="rating" class="h3">Rate this book:</label>
-                                <div id="starRating" class="star-rating">
-                                    <span class="fa fa-star" data-value="1"></span>
-                                    <span class="fa fa-star" data-value="2"></span>
-                                    <span class="fa fa-star" data-value="3"></span>
-                                    <span class="fa fa-star" data-value="4"></span>
-                                    <span class="fa fa-star" data-value="5"></span>
+                        @if (canRate)
+                        {
+                            <form id="addRatingForm">
+                                <input type="hidden" name="UserId" value="@userId"/>
+                                <input type="hidden" name="BookId" value="@Model.IdBook"/>
+                                <div class="form-group">
+                                    <label for="rating" class="h3">Rate this book:</label>
+                                    <div id="starRating" class="star-rating">
+                                        <span class="fa fa-star" data-value="1"></span>
+                                        <span class="fa fa-star" data-value="2"></span>
+                                        <span class="fa fa-star" data-value="3"></span>
+                                        <span class="fa fa-star" data-value="4"></span>
+                                        <span class="fa fa-star" data-value="5"></span>
+                                    </div>
+                                    <input type="hidden" id="rating" name="Rating" value="0"/>
                                 </div>
-                                <input type="hidden" id="rating" name="Rating" value="0"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="comment">Comment:</label>
-                                <textarea id="comment" name="Comment" class="form-control"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="margin-top: 20px">Submit</button>
-                        </form>
+                                <div class="form-group">
+                                    <label for="comment">Comment:</label>
+                                    <textarea id="comment" name="Comment" class="form-control"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="margin-top: 20px">Submit</button>
+                            </form>
+                        }
                     </div>
                     <div style="margin-top: 20px">
                         @if (isAdmin)

@@ -31,4 +31,17 @@ public class RatingController : Controller
         await _ratingService.Create(rating);
         return Content("Success");
     }
+    
+    [HttpGet] 
+    public async Task<IActionResult> GetRating(int userId, int bookId)
+    {
+        var rating = await _ratingService.GetRatingByUserAndBookAsync(userId, bookId);
+        if (rating == null)
+        {
+            return NotFound("Rating not found.");
+        }
+
+        var ratingViewModel = _mapper.Map<RatingViewModel>(rating);
+        return Ok(ratingViewModel);
+    }
 }

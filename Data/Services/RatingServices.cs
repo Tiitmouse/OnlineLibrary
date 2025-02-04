@@ -8,6 +8,7 @@ namespace Data.Services;
 public interface IRatingService
 {
     public Task<Rating> Get(int id);
+    Task<Rating> GetRatingByUserAndBookAsync(int userId, int bookId);
     public Task Delete(int id);
     public Task DeleteByBookID(int bookId);
     
@@ -40,6 +41,12 @@ public class RatingServices  : IRatingService
         }
         await _logService.Create($"Rating with ID {id} fetched successfully", Importance.Low);
         return rating;
+    }
+
+    public async Task<Rating> GetRatingByUserAndBookAsync(int userId, int bookId)
+    {
+        return await _context.Ratings
+            .FirstOrDefaultAsync(r => r.UserId == userId && r.BookId == bookId);
     }
 
     public async Task Delete(int id)
