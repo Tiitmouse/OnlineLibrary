@@ -43,10 +43,10 @@ public class BookServices : IBookService
             .FirstOrDefaultAsync(b => b.IdBook == id);
         if (book == null)
         {
-            await _logService.Create("Failed to fetch book with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Failed to fetch book with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Book with id {id} not found");
         }
-        await _logService.Create("Book with ID {id} fetched successfully", Importance.Low);
+        await _logService.Create($"Book with ID {id} fetched successfully", Importance.Low);
         return book;
     }
 
@@ -55,12 +55,12 @@ public class BookServices : IBookService
         Book book = await _context.Books.FirstOrDefaultAsync(b => b.IdBook == id);
         if (book == null)
         {
-            await _logService.Create("Cannot delete book with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Cannot delete book with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Book with id {id} not found");
         }
         await _ratingService.DeleteByBookID(id);
         _context.Books.Remove(book);
-        await _logService.Create("Book with ID {id} successfully deleted", Importance.High);
+        await _logService.Create($"Book with ID {id} successfully deleted", Importance.High);
         await _context.SaveChangesAsync();
     }
 
@@ -116,7 +116,7 @@ public class BookServices : IBookService
         Book original = await _context.Books.FirstOrDefaultAsync(b => b.IdBook == id);
         if (original == null)
         {
-            await _logService.Create("Cannot update book with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Cannot update book with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Book with id {id} not found");
         }
 
@@ -128,7 +128,7 @@ public class BookServices : IBookService
         original.AuthorId = book.AuthorId;
 
         _context.Books.Update(original);
-        await _logService.Create("Book with ID {id} successfully updated", Importance.High);
+        await _logService.Create($"Book with ID {id} successfully updated", Importance.High);
         await _context.SaveChangesAsync();
     }
 
@@ -137,12 +137,12 @@ public class BookServices : IBookService
         Book? book = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == newBook.Isbn);
         if (book != null)
         {
-            await _logService.Create("Cannot create book with ISBN {newBook.Isbn}, because there is already a book with the same ISBN", Importance.Low);
+            await _logService.Create($"Cannot create book with ISBN {newBook.Isbn}, because there is already a book with the same ISBN", Importance.Low);
             throw new AlreadyExistsException($"Book with {newBook.Isbn} already exists");
         }
 
         await _context.Books.AddAsync(newBook);
-        await _logService.Create("Book with ISBN {newBook.Isbn} successfully added", Importance.High);
+        await _logService.Create($"Book with ISBN {newBook.Isbn} successfully added", Importance.High);
         await _context.SaveChangesAsync();
 
         return newBook.IdBook;

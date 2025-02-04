@@ -35,10 +35,10 @@ public class RatingServices  : IRatingService
             .FirstOrDefaultAsync(r => r.IdRating == id);
         if (rating == null)
         {
-            await _logService.Create("Failed to fetch rating with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Failed to fetch rating with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Rating with id {id} not found");
         }
-        await _logService.Create("Rating with ID {id} fetched successfully", Importance.Low);
+        await _logService.Create($"Rating with ID {id} fetched successfully", Importance.Low);
         return rating;
     }
 
@@ -47,11 +47,11 @@ public class RatingServices  : IRatingService
         Rating rating = await _context.Ratings.FirstOrDefaultAsync(a => a.IdRating == id);
         if (rating == null)
         {
-            await _logService.Create("Cannot delete rating with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Cannot delete rating with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Rating with id {id} not found");
         }
         _context.Ratings.Remove(rating);
-        await _logService.Create("Rating with ID {id} successfully deleted", Importance.High);
+        await _logService.Create($"Rating with ID {id} successfully deleted", Importance.High);
         await _context.SaveChangesAsync();
     }
 

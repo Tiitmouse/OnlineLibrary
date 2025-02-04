@@ -33,10 +33,10 @@ public class AuthorServices : IAuthorService
             .FirstOrDefaultAsync(a => a.IdAuthor == id);
         if (author == null)
         {
-            await _logService.Create("Failed to fetch autor with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Failed to fetch autor with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Author with id {id} not found");
         }
-        await _logService.Create("Author with ID {id} fetched successfully", Importance.Low);
+        await _logService.Create($"Author with ID {id} fetched successfully", Importance.Low);
         return author;
     }
 
@@ -45,11 +45,11 @@ public class AuthorServices : IAuthorService
         Author author = await _context.Authors.FirstOrDefaultAsync(a => a.IdAuthor == id);
         if (author == null)
         {
-            await _logService.Create("Cannot delete author with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Cannot delete author with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"author with id {id} not found");
         }
         _context.Authors.Remove(author);
-        await _logService.Create("Author with ID {id} successfully deleted", Importance.High);
+        await _logService.Create($"Author with ID {id} successfully deleted", Importance.High);
         await _context.SaveChangesAsync();
     }
 
@@ -58,14 +58,14 @@ public class AuthorServices : IAuthorService
         Author original = await _context.Authors.FirstOrDefaultAsync(a => a.IdAuthor == id);
         if (original == null)
         {
-            await _logService.Create("Cannot update author with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Cannot update author with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"author with id {id} not found");
         }
 
         original.AuthorName = author.AuthorName;
         
         _context.Authors.Update(original);
-        await _logService.Create("Author with ID {id} auccessfully updated", Importance.Medium);
+        await _logService.Create($"Author with ID {id} auccessfully updated", Importance.Medium);
         await _context.SaveChangesAsync();
     }
 

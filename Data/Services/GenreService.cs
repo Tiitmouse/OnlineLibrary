@@ -33,10 +33,10 @@ public class GenreService : IGenreService
             .FirstOrDefaultAsync(g => g.IdGenre == id);
         if (genre == null)
         {
-            await _logService.Create("Failed to fetch genre with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Failed to fetch genre with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Genre with id {id} not found");
         }
-        await _logService.Create("Genre with ID {id} fetched successfully", Importance.Low);
+        await _logService.Create($"Genre with ID {id} fetched successfully", Importance.Low);
         return genre;
     }
 
@@ -45,11 +45,11 @@ public class GenreService : IGenreService
         Genre genre = await _context.Genres.FirstOrDefaultAsync(b => b.IdGenre == id);
         if (genre == null)
         {
-            await _logService.Create("Cannot delete genre with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Cannot delete genre with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"genre with id {id} not found");
         }
         _context.Genres.Remove(genre);
-        await _logService.Create("Genre with ID {id} successfully deleted", Importance.High);
+        await _logService.Create($"Genre with ID {id} successfully deleted", Importance.High);
         await _context.SaveChangesAsync();
     }
 
@@ -58,12 +58,12 @@ public class GenreService : IGenreService
         Genre original = await _context.Genres.FirstOrDefaultAsync(g => g.IdGenre == id);
         if (original == null)
         {
-            await _logService.Create("Cannot update genre with ID {id}, because there is none with the same ID", Importance.Low);
+            await _logService.Create($"Cannot update genre with ID {id}, because there is none with the same ID", Importance.Low);
             throw new NotFoundException($"Genre with id {id} not found");
         }
         original.GenreName = genre.GenreName;
         _context.Genres.Update(original);
-        await _logService.Create("Genre with ID {id} successfully updated", Importance.High);
+        await _logService.Create($"Genre with ID {id} successfully updated", Importance.High);
         await _context.SaveChangesAsync();
     }
 
@@ -72,11 +72,11 @@ public class GenreService : IGenreService
         Genre? genre = await _context.Genres.FirstOrDefaultAsync(g => g.GenreName == newgenre.GenreName);
         if (genre != null)
         {
-            await _logService.Create("Cannot create genre with name {newgenre.GenreName}, because there is one with the same name", Importance.Low);
+            await _logService.Create($"Cannot create genre with name {newgenre.GenreName}, because there is one with the same name", Importance.Low);
             throw new AlreadyExistsException($"genre with {newgenre.GenreName} already exists");
         }
         await _context.Genres.AddAsync(newgenre);
-        await _logService.Create("Genre with name {newgenre.GenreName} successfully created", Importance.High);
+        await _logService.Create($"Genre with name {newgenre.GenreName} successfully created", Importance.High);
         await _context.SaveChangesAsync();
     }
 
