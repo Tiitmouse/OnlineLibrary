@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using AutoMapper;
 using Data.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApp.Models;
 
 namespace WebApp.Controllers;
 
+[Authorize]
 public class BookController : Controller
 {
     private readonly IBookService _bookService;

@@ -1,11 +1,13 @@
 using AutoMapper;
 using Data.Models;
 using Data.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 
 namespace WebApp.Controllers;
 
+[Authorize]
 public class GenreController  : Controller
 {
     private readonly IGenreService _genreService;

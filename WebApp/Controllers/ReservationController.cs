@@ -1,11 +1,12 @@
 using AutoMapper;
 using Data.Models;
 using Data.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 
 namespace WebApp.Controllers;
-
+[Authorize]
 public class ReservationController : Controller
 {
     private readonly IReservationService _reservationService;

@@ -2,11 +2,12 @@ using AutoMapper;
 using Data.Exceptions;
 using Data.Models;
 using Data.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 
 namespace WebApp.Controllers;
-
+[Authorize]
 public class LocationController : Controller
 {
     private readonly ILocationService _locationService;

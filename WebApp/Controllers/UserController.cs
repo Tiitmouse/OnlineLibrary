@@ -97,7 +97,7 @@ public class UserController : Controller
         var userDetails = _mapper.Map<UserDetailsViewModel>(user);
         return View(userDetails);
     }
-
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> EditUserFullName(UserDetailsViewModel model)
     {
@@ -105,7 +105,7 @@ public class UserController : Controller
         await _userServices.UpdateUserFullName(model.FullName, username);
         return Json(new { success = true });
     }
-
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> EditUserPassword(string oldPassword, string newPassword, string username)
     {
