@@ -29,7 +29,7 @@ public class RatingController : Controller
             Comment = ratingViewModel.Comment
         };
         await _ratingService.Create(rating);
-        return Content("Success");
+        return Ok();
     }
     
     [HttpGet] 

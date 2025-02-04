@@ -8,7 +8,7 @@
     var message = TempData["Message"] as string;
     var isAdmin = User.Claims.FirstOrDefault(c => c.Type == "admin")?.Value == "True";
     int userId = User.Claims.FirstOrDefault(c => c.Type == "id") != null ? int.Parse(User.Claims.FirstOrDefault(c => c.Type == "id").Value) : 0;
-    var canRate = !isAdmin && Model.Ratings.Any(r => r.UserId == userId) != null;
+    var canRate = !isAdmin && !Model.Ratings.Any(r => r.UserId == userId);
 }
 
 @if (!string.IsNullOrEmpty(message))
@@ -182,7 +182,7 @@
             });
         });
         
-document.getElementById('addRatingForm').addEventListener('submit', function (event) {
+document.getElementById('addRatingForm')?.addEventListener('submit', function (event) {
     event.preventDefault();
     const formData = new FormData(this);
     const data = {};
@@ -199,9 +199,8 @@ document.getElementById('addRatingForm').addEventListener('submit', function (ev
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
     .then(result => {
-        if (result.success) {
+        if (result.ok) {
             location.reload();
         } else {
             alert('Error adding rating: ' + result.message);
