@@ -15,39 +15,38 @@
 
 @if (Model != null && Model.Any())
 {
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Select</th>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var author in Model)
-        {
+    <form method="post" asp-action="DeleteSelectedAuthors" id="deleteForm">
+        <table class="table">
+            <thead>
             <tr>
-                <td>
-                    <form method="post" asp-action="DeleteSelectedAuthors" id="deleteForm">
-                        <input type="checkbox" name="authorIds" value="@author.IdAuthor"/>
-
-                    </form>
-                </td>
-                <td>@author.IdAuthor</td>
-                <td>
-                    <form method="post" action="@Url.Action("Edit", "Author")" id="editForm-@author.IdAuthor">
-                        <input type="hidden" name="IdAuthor" value="@author.IdAuthor"/>
-                        <div class="form-group mb-2 mr-2">
-                            <input type="text" class="form-control" name="AuthorName" value="@author.AuthorName" style="width: 300px"/>
-                            <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#editModal-@author.IdAuthor">Update</button>
-                        </div>
-                    </form>
-                </td>
+                <th scope="col">Select</th>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
             </tr>
-        }
-        </tbody>
-    </table>
-    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Authors</button>
+            </thead>
+            <tbody>
+            @foreach (var author in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="authorIds" value="@author.IdAuthor"/>
+                    </td>
+                    <td>@author.IdAuthor</td>
+                    <td>
+                        <form method="post" action="@Url.Action("Edit", "Author")" id="editForm-@author.IdAuthor">
+                            <input type="hidden" name="IdAuthor" value="@author.IdAuthor"/>
+                            <div class="form-group mb-2 mr-2">
+                                <input type="text" class="form-control" name="AuthorName" value="@author.AuthorName" style="width: 300px"/>
+                                <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#editModal-@author.IdAuthor">Update</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Authors</button>
+    </form>
     <button type="button" class="btn btn-primary" id="addAuthorButton">+</button>
 }
 else

@@ -15,39 +15,38 @@
 
 @if (Model != null && Model.Any())
 {
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Select</th>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var genre in Model)
-        {
+    <form method="post" asp-action="DeleteSelectedGenres" id="deleteForm">
+        <table class="table">
+            <thead>
             <tr>
-                <td>
-                    <form method="post" asp-action="DeleteSelectedGenres" id="deleteForm">
-                        <input type="checkbox" name="genreIds" value="@genre.IdGenre"/>
-
-                    </form>
-                </td>
-                <td>@genre.IdGenre</td>
-                <td>
-                    <form method="post" action="@Url.Action("Edit", "Genre")" id="editForm-@genre.IdGenre">
-                        <input type="hidden" name="IdGenre" value="@genre.IdGenre"/>
-                        <div class="form-group mb-2 mr-2">
-                            <input type="text" class="form-control" name="GenreName" value="@genre.GenreName" style="width: 300px"/>
-                            <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#editModal-@genre.IdGenre">Update</button>
-                        </div>
-                    </form>
-                </td>
+                <th scope="col">Select</th>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
             </tr>
-        }
-        </tbody>
-    </table>
-    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Genres</button>
+            </thead>
+            <tbody>
+            @foreach (var genre in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="genreIds" value="@genre.IdGenre"/>
+                    </td>
+                    <td>@genre.IdGenre</td>
+                    <td>
+                        <form method="post" action="@Url.Action("Edit", "Genre")" id="editForm-@genre.IdGenre">
+                            <input type="hidden" name="IdGenre" value="@genre.IdGenre"/>
+                            <div class="form-group mb-2 mr-2">
+                                <input type="text" class="form-control" name="GenreName" value="@genre.GenreName" style="width: 300px"/>
+                                <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#editModal-@genre.IdGenre">Update</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal">Delete Selected Genres</button>
+    </form>
     <button type="button" class="btn btn-primary" id="addGenreButton">+</button>
 }
 else
@@ -105,7 +104,7 @@ else
     <script>
     const forms = document.querySelectorAll('form');
     console.log(forms);
-    
+
         document.getElementById('confirmDeleteButton').addEventListener('click', function () {
             document.getElementById('deleteForm').submit();
         });
